@@ -71,7 +71,7 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Commands
                 .Should().NotThrow();
 
 
-            var sprint = await _sprintRepository.GetAsync(command.Id);
+            var sprint = await _sprintRepository.GetAsync(command.SprintId);
 
             sprint.Should().NotBeNull();
             sprint.Id.Should().Be(sprintId);

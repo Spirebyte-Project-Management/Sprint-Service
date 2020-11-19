@@ -39,10 +39,11 @@ namespace Spirebyte.Services.Sprints.API
                     .UsePingEndpoint()
                     .UseDispatcherEndpoints(endpoints => endpoints
                         .Get("", ctx => ctx.Response.WriteAsync(ctx.RequestServices.GetService<AppOptions>().Name))
+                        .Get<GetSprints, IEnumerable<SprintDto>>("sprints/forproject/{projectKey}")
                         .Get<GetSprints, IEnumerable<SprintDto>>("sprints")
                         .Get<GetSprint, SprintDto>("sprints/{key}")
                         .Post<CreateSprint>("sprints",
-                            afterDispatch: (cmd, ctx) => ctx.Response.Created($"sprints/{cmd.Id}"))
+                            afterDispatch: (cmd, ctx) => ctx.Response.Created($"sprints/{cmd.SprintId}"))
                     ))
                 .UseLogging()
                 .UseVault();

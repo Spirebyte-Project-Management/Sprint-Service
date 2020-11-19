@@ -26,7 +26,7 @@ namespace Spirebyte.Services.Sprints.Tests.Unit.Core.Entities
             var sprint = new Sprint(sprintId, key, title, description, projectId, createdAt, startedAt, startDate, endDate, endedAt);
 
             sprint.Should().NotBeNull();
-            sprint.Id.Should().Be(projectId);
+            sprint.Id.Should().Be(sprintId);
             sprint.Key.Should().Be(key);
             sprint.Title.Should().Be(title);
             sprint.Description.Should().Be(description);

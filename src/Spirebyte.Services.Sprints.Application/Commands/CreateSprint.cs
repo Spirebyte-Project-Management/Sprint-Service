@@ -8,7 +8,7 @@ namespace Spirebyte.Services.Sprints.Application.Commands
     [Contract]
     public class CreateSprint : ICommand
     {
-        public Guid Id { get; set; }
+        public Guid SprintId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public Guid ProjectId { get; set; }
@@ -21,7 +21,7 @@ namespace Spirebyte.Services.Sprints.Application.Commands
 
         public CreateSprint(Guid id, string title, string description, Guid projectId, string projectKey, DateTime startDate, DateTime endDate)
         {
-            Id = id;
+            SprintId = id;
             Title = title;
             Description = description;
             ProjectId = projectId;

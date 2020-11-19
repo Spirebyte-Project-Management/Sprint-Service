@@ -76,7 +76,7 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
             var result = await requestResult();
 
             result.Should().NotBeNull();
-            result.Id.Should().Be(projectId);
+            result.Id.Should().Be(sprintId);
             result.Title.Should().Be(title);
             result.Description.Should().Be(description);
         }
