@@ -27,14 +27,17 @@ namespace Spirebyte.Services.Sprints.Application.Commands.Handlers
 
         public async Task HandleAsync(CreateSprint command)
         {
+            if (string.IsNullOrEmpty(command.ProjectKey) && command.ProjectId != Guid.NewGuid())
+            {
+                command.ProjectKey = await _projectRepository.GetKeyAsync(command.ProjectId);
+            }
             if (!(await _projectRepository.ExistsAsync(command.ProjectKey)))
             {
                 throw new ProjectNotFoundException(command.ProjectKey);
             }
 
-            var projectkey = await _projectRepository.GetKeyAsync(command.ProjectId);
             var sprintCount = await _sprintRepository.GetSprintCountOfProjectAsync(command.ProjectId);
-            var sprintKey = $"{projectkey}-Sprint-{sprintCount + 1}";
+            var sprintKey = $"{command.ProjectKey}-Sprint-{sprintCount + 1}";
 
             var sprint = new Sprint(command.SprintId, sprintKey, command.Title, command.Description, command.ProjectId, command.CreatedAt, DateTime.MinValue, command.StartDate, command.EndDate, DateTime.MinValue);
             await _sprintRepository.AddAsync(sprint);
