@@ -11,8 +11,8 @@ namespace Spirebyte.Services.Sprints.Infrastructure.Exceptions
             => exception switch
 
             {
-                UserNotFoundException ex => new SprintCreatedRejected(ex.UserId, ex.Message, ex.Code),
-                KeyAlreadyExistsException ex => new SprintCreatedRejected(ex.UserId, ex.Message, ex.Code),
+                ProjectNotFoundException ex => new SprintCreatedRejected(ex.ProjectId, ex.Message, ex.Code),
+                KeyAlreadyExistsException ex => new SprintCreatedRejected(ex.ProjectId, ex.Message, ex.Code),
                 _ => null
             };
     }

@@ -23,7 +23,7 @@ namespace Spirebyte.Services.Sprints.Tests.Unit.Core.Entities
             var endDate = DateTime.MaxValue;
             var endedAt = DateTime.MaxValue;
 
-            var sprint = new Sprint(sprintId, key, title, description, projectId, createdAt, startedAt, startDate, endDate, endedAt);
+            var sprint = new Sprint(sprintId, key, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
 
             sprint.Should().NotBeNull();
             sprint.Id.Should().Be(sprintId);
@@ -53,7 +53,7 @@ namespace Spirebyte.Services.Sprints.Tests.Unit.Core.Entities
             var endDate = DateTime.MaxValue;
             var endedAt = DateTime.MaxValue;
 
-            Action act = () => new Sprint(sprintId, key, title, description, projectId, createdAt, startedAt, startDate, endDate, endedAt);
+            Action act = () => new Sprint(sprintId, key, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
             act.Should().Throw<InvalidKeyException>();
         }
 
@@ -71,7 +71,7 @@ namespace Spirebyte.Services.Sprints.Tests.Unit.Core.Entities
             var endDate = DateTime.MaxValue;
             var endedAt = DateTime.MaxValue;
 
-            Action act = () => new Sprint(sprintId, key, title, description, projectId, createdAt, startedAt, startDate, endDate, endedAt);
+            Action act = () => new Sprint(sprintId, key, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
             act.Should().Throw<InvalidProjectIdException>();
         }
 
@@ -89,7 +89,7 @@ namespace Spirebyte.Services.Sprints.Tests.Unit.Core.Entities
             var endDate = DateTime.MaxValue;
             var endedAt = DateTime.MaxValue;
 
-            Action act = () => new Sprint(sprintId, key, title, description, projectId, createdAt, startedAt, startDate, endDate, endedAt);
+            Action act = () => new Sprint(sprintId, key, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
             act.Should().Throw<InvalidTitleException>();
         }
     }

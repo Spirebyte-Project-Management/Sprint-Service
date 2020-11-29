@@ -33,7 +33,7 @@ namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Repositories
         }
 
         public async Task<int> GetSprintCountOfProjectAsync(Guid projectId) => await _repository.Collection.CountAsync(x => x.ProjectId == projectId);
-        public Task<bool> ExistsWithKeyAsync(string key) => _repository.ExistsAsync(c => c.Key == key);
+        public Task<bool> ExistsAsync(string key) => _repository.ExistsAsync(c => c.Key == key);
 
         public Task AddAsync(Sprint sprint) => _repository.AddAsync(sprint.AsDocument());
 

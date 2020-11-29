@@ -50,10 +50,10 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Commands
         [Fact]
         public async Task create_sprint_command_should_add_sprint_with_given_data_to_database()
         {
-            var sprintId = new AggregateId();
+            var sprintId = Guid.NewGuid();
             var title = "Title";
             var description = "description";
-            var projectId = new AggregateId();
+            var projectId = Guid.NewGuid();
             var projectKey = "key";
             var startDate = DateTime.MinValue;
             var endDate = DateTime.MaxValue;
@@ -62,7 +62,7 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Commands
             await _projectsRepository.AddAsync(project.AsDocument());
 
 
-            var command = new CreateSprint(sprintId, title, description, project.Id, projectKey, startDate, endDate);
+            var command = new CreateSprint(sprintId, title, description, projectId, projectKey, startDate, endDate);
 
             // Check if exception is thrown
 
@@ -85,10 +85,10 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Commands
         [Fact]
         public void create_sprint_command_fails_when_project_does_not_exist()
         {
-            var sprintId = new AggregateId();
+            var sprintId = Guid.NewGuid();
             var title = "Title";
             var description = "description";
-            var projectId = new AggregateId();
+            var projectId = Guid.NewGuid();
             var projectKey = "key";
             var startDate = DateTime.MinValue;
             var endDate = DateTime.MaxValue;

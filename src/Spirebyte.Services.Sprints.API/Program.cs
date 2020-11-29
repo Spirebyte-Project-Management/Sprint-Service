@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Convey;
@@ -41,7 +42,10 @@ namespace Spirebyte.Services.Sprints.API
                         .Get("", ctx => ctx.Response.WriteAsync(ctx.RequestServices.GetService<AppOptions>().Name))
                         .Get<GetSprints, IEnumerable<SprintDto>>("sprints/forproject/{projectKey}")
                         .Get<GetSprints, IEnumerable<SprintDto>>("sprints")
+                        .Get<GetIssuesWithoutSprintForProject, Guid[]>("issuesWithoutSprintForProject/{projectKey}")
                         .Get<GetSprint, SprintDto>("sprints/{key}")
+                        .Post<AddIssueToSprint>("sprints/{sprintKey}/addIssue/{issueKey}")
+                        .Post<RemoveIssueFromSprint>("sprints/{sprintKey}/removeIssue/{issueKey}")
                         .Post<CreateSprint>("sprints",
                             afterDispatch: (cmd, ctx) => ctx.Response.Created($"sprints/{cmd.SprintId}"))
                     ))

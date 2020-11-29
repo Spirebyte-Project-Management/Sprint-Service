@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Convey.CQRS.Queries;
+using Microsoft.EntityFrameworkCore;
 using Partytitan.Convey.Persistence.EntityFramework.Repositories.Interfaces;
 using Spirebyte.Services.Sprints.Application.DTO;
 using Spirebyte.Services.Sprints.Application.Queries;
@@ -20,9 +22,9 @@ namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Queries.Hand
 
         public async Task<SprintDto> HandleAsync(GetSprint query)
         {
-            var project = await _sprintRepository.GetAsync(p => p.Key == query.Key);
+            var sprint = await _sprintRepository.Collection.Include(c => c.Issues).FirstOrDefaultAsync(p => p.Key == query.Key);
 
-            return project?.AsDto();
+            return sprint?.AsDto();
         }
     }
 }

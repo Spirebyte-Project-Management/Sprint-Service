@@ -17,5 +17,6 @@ namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime EndedAt { get; set; }
+        public ICollection<IssueTable> Issues { get; set; }
     }
 }

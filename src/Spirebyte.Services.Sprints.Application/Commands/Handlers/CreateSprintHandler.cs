@@ -39,7 +39,7 @@ namespace Spirebyte.Services.Sprints.Application.Commands.Handlers
             var sprintCount = await _sprintRepository.GetSprintCountOfProjectAsync(command.ProjectId);
             var sprintKey = $"{command.ProjectKey}-Sprint-{sprintCount + 1}";
 
-            var sprint = new Sprint(command.SprintId, sprintKey, command.Title, command.Description, command.ProjectId, command.CreatedAt, DateTime.MinValue, command.StartDate, command.EndDate, DateTime.MinValue);
+            var sprint = new Sprint(command.SprintId, sprintKey, command.Title, command.Description, command.ProjectId, null, command.CreatedAt, DateTime.MinValue, command.StartDate, command.EndDate, DateTime.MinValue);
             await _sprintRepository.AddAsync(sprint);
             await _messageBroker.PublishAsync(new SprintCreated(sprint.Id));
         }

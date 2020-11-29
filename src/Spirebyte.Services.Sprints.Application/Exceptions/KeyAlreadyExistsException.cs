@@ -7,14 +7,14 @@ namespace Spirebyte.Services.Sprints.Application.Exceptions
     {
         public override string Code { get; } = "key_already_exists";
         public string Key { get; }
-        public Guid UserId { get; }
+        public Guid ProjectId { get; }
 
 
-        public KeyAlreadyExistsException(string key, Guid userId)
+        public KeyAlreadyExistsException(string key, Guid projectId)
             : base($"Project with key: {key} already exists.")
         {
             Key = key;
-            UserId = userId;
+            ProjectId = projectId;
         }
     }
 }

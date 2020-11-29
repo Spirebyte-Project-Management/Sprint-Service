@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Text;
 using Convey.CQRS.Events;
@@ -11,11 +11,13 @@ namespace Spirebyte.Services.Sprints.Application.Events.External
     {
         public Guid IssueId { get; }
         public string IssueKey { get; }
+        public Guid ProjectId { get; }
 
-        public IssueCreated(Guid issueId, string issueKey)
+        public IssueCreated(Guid issueId, string issueKey, Guid projectId)
         {
             IssueId = issueId;
             IssueKey = issueKey;
+            ProjectId = projectId;
         }
     }
 }

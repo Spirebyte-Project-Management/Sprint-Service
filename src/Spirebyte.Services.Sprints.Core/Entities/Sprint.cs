@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Spirebyte.Services.Sprints.Core.Exceptions;
 
 namespace Spirebyte.Services.Sprints.Core.Entities
@@ -10,13 +12,14 @@ namespace Spirebyte.Services.Sprints.Core.Entities
         public string Title { get; set; }
         public string Description { get; set; }
         public Guid ProjectId { get; set; }
+        public Guid[] IssueIds { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime StartedAt { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime EndedAt { get; set; }
 
-        public Sprint(Guid id, string key, string title, string description, Guid projectId, DateTime createdAt, DateTime startedAt, DateTime startDate, DateTime endDate, DateTime endedAt)
+        public Sprint(Guid id, string key, string title, string description, Guid projectId, Guid[] issueIds, DateTime createdAt, DateTime startedAt, DateTime startDate, DateTime endDate, DateTime endedAt)
         {
             if (projectId == Guid.Empty)
             {
@@ -38,6 +41,7 @@ namespace Spirebyte.Services.Sprints.Core.Entities
             Title = title;
             Description = description;
             ProjectId = projectId;
+            IssueIds = issueIds ?? new Guid[]{};
             CreatedAt = createdAt;
             StartedAt = startedAt;
             StartDate = startDate;

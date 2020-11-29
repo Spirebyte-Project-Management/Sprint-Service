@@ -26,9 +26,14 @@ namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Queries.Hand
 
         public async Task<IEnumerable<SprintDto>> HandleAsync(GetSprints query)
         {
-            var projects = await _sprintRepository.Collection.ToListAsync();
+            if (query.ProjectId == Guid.Empty)
+            {
+                var sprints = await _sprintRepository.Collection.Include(c => c.Issues).ToListAsync();
+                return sprints.Select(p => p.AsDto());
+            }
+            var sprintsWithProject = await _sprintRepository.Collection.Include(c => c.Issues).Where(p => p.ProjectId == query.ProjectId).ToListAsync();
 
-            return projects.Select(p => p.AsDto());
+            return sprintsWithProject.Select(p => p.AsDto());
         }
     }
 }

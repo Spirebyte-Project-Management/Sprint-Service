@@ -87,7 +87,17 @@ namespace Spirebyte.Services.Sprints.Infrastructure.Migrations
                     b.Property<string>("Key")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("SprintId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("SprintId");
 
                     b.ToTable("Issues");
                 });
@@ -142,6 +152,19 @@ namespace Spirebyte.Services.Sprints.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Sprints");
+                });
+
+            modelBuilder.Entity("Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.IssueTable", b =>
+                {
+                    b.HasOne("Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.ProjectTable", "Project")
+                        .WithMany("Issues")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.SprintTable", "Sprint")
+                        .WithMany("Issues")
+                        .HasForeignKey("SprintId");
                 });
 #pragma warning restore 612, 618
         }

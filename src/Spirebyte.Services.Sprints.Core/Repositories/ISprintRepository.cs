@@ -9,7 +9,7 @@ namespace Spirebyte.Services.Sprints.Core.Repositories
         Task<Sprint> GetAsync(Guid sprintId);
         Task<Sprint> GetAsync(string sprintKey);
         Task<int> GetSprintCountOfProjectAsync(Guid projectId);
-        Task<bool> ExistsWithKeyAsync(string key);
+        Task<bool> ExistsAsync(string key);
         Task AddAsync(Sprint sprint);
         Task UpdateAsync(Sprint sprint);
     }

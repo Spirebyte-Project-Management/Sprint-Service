@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Convey.Types;
 
 namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables
@@ -7,5 +8,7 @@ namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables
     {
         public Guid Id { get; set; }
         public string Key { get; set; }
+        public ICollection<IssueTable> Issues { get; set; }
+
     }
 }

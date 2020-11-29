@@ -22,8 +22,26 @@ namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Repositories
 
             return issue?.AsEntity();
         }
+        public async Task<Issue> GetAsync(string sprintkey)
+        {
+            var issue = await _repository.GetAsync(p => p.Key == sprintkey);
+            return issue?.AsEntity();
+        }
         public Task<bool> ExistsAsync(Guid id) => _repository.ExistsAsync(c => c.Id == id);
         public Task<bool> ExistsAsync(string key) => _repository.ExistsAsync(c => c.Key == key);
         public Task AddAsync(Issue issue) => _repository.AddAsync(issue.AsDocument());
+        public async Task UpdateAsync(Issue issue)
+        {
+            var issueEntity = await _repository.GetAsync(issue.Id);
+
+            issueEntity.SprintId = issue.SprintId;
+            issueEntity.ProjectId = issue.ProjectId;
+            issueEntity.Key = issue.Key;
+
+            await _repository.SaveChangesAsync();
+        }
+
+        public Task SaveChangesAsync() => _repository.SaveChangesAsync();
+
     }
 }

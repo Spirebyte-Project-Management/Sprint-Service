@@ -10,6 +10,7 @@ namespace Spirebyte.Services.Sprints.Application.DTO
         public string Key { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public Guid[] IssueIds { get; set; }
         public Guid ProjectId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime StartedAt { get; set; }

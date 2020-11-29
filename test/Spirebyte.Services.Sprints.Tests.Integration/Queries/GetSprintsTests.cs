@@ -63,8 +63,8 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
             var endDate = DateTime.MaxValue;
             var endedAt = DateTime.MaxValue;
 
-            var sprint = new Sprint(sprintId, key, title, description, projectId, createdAt, startedAt, startDate, endDate, endedAt);
-            var sprint2 = new Sprint(sprint2Id, key2, title, description, projectId, createdAt, startedAt, startDate, endDate, endedAt);
+            var sprint = new Sprint(sprintId, key, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
+            var sprint2 = new Sprint(sprint2Id, key2, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
 
             await _sprintRepository.AddAsync(sprint.AsDocument());
             await _sprintRepository.AddAsync(sprint2.AsDocument());
