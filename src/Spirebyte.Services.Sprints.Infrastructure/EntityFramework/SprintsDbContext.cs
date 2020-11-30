@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Ardalis.EFCore.Extensions;
+﻿using Ardalis.EFCore.Extensions;
 using Convey.MessageBrokers.Outbox.Messages;
 using Microsoft.EntityFrameworkCore;
 using Partytitan.Convey.MessageBrokers.Outbox.EntityFramework.Outbox.Entities;
-using Spirebyte.Services.Sprints.Core.Entities;
 using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables;
 
 namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework

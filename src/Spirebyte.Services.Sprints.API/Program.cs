@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Convey;
 using Convey.Logging;
 using Convey.Secrets.Vault;
@@ -17,6 +14,9 @@ using Spirebyte.Services.Sprints.Application.Commands;
 using Spirebyte.Services.Sprints.Application.DTO;
 using Spirebyte.Services.Sprints.Application.Queries;
 using Spirebyte.Services.Sprints.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Sprints.API
 {

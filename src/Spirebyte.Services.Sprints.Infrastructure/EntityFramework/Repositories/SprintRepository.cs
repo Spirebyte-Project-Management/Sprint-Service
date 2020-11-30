@@ -1,11 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Partytitan.Convey.Persistence.EntityFramework.Repositories.Interfaces;
 using Spirebyte.Services.Sprints.Core.Entities;
 using Spirebyte.Services.Sprints.Core.Repositories;
 using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables;
 using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.Mappers;
+using System;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Repositories
 {

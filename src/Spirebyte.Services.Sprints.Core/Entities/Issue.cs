@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Spirebyte.Services.Sprints.Core.Exceptions;
 
 namespace Spirebyte.Services.Sprints.Core.Entities
 {

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Spirebyte.Services.Sprints.Core.Entities.Base.Interfaces;
+﻿using Spirebyte.Services.Sprints.Core.Entities.Base.Interfaces;
+using System.Collections.Generic;
 
 namespace Spirebyte.Services.Sprints.Core.Entities.Base
 {

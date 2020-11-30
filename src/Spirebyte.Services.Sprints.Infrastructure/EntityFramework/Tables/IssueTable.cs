@@ -1,6 +1,5 @@
-﻿using System;
-using Convey.Types;
-using Spirebyte.Services.Sprints.Core.Entities;
+﻿using Convey.Types;
+using System;
 
 namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables
 {

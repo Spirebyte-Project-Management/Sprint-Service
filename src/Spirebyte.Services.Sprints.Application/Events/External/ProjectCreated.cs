@@ -1,6 +1,6 @@
-﻿using System;
-using Convey.CQRS.Events;
+﻿using Convey.CQRS.Events;
 using Convey.MessageBrokers;
+using System;
 
 namespace Spirebyte.Services.Sprints.Application.Events.External
 {

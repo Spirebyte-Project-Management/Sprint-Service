@@ -1,13 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Convey.CQRS.Queries;
+﻿using Convey.CQRS.Queries;
 using Microsoft.EntityFrameworkCore;
 using Partytitan.Convey.Persistence.EntityFramework.Repositories.Interfaces;
 using Spirebyte.Services.Sprints.Application.DTO;
 using Spirebyte.Services.Sprints.Application.Queries;
 using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables;
 using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.Mappers;
+using System;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Queries.Handler
 {

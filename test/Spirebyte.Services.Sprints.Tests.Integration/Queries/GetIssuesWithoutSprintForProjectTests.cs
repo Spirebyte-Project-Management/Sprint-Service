@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Convey.CQRS.Queries;
+﻿using Convey.CQRS.Queries;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Partytitan.Convey.Persistence.EntityFramework.Repositories.Interfaces;
 using Spirebyte.Services.Sprints.API;
-using Spirebyte.Services.Sprints.Application.DTO;
 using Spirebyte.Services.Sprints.Application.Queries;
 using Spirebyte.Services.Sprints.Core.Entities;
-using Spirebyte.Services.Sprints.Core.Entities.Base;
 using Spirebyte.Services.Sprints.Infrastructure.EntityFramework;
 using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables;
 using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.Mappers;
 using Spirebyte.Services.Sprints.Tests.Shared.Factories;
 using Spirebyte.Services.Sprints.Tests.Shared.Fixtures;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Spirebyte.Services.Sprints.Tests.Integration.Queries

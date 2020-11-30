@@ -1,5 +1,5 @@
-﻿using System;
-using Convey.CQRS.Events;
+﻿using Convey.CQRS.Events;
+using System;
 
 namespace Spirebyte.Services.Sprints.Application.Events
 {

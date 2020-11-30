@@ -1,7 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Spirebyte.Services.Sprints.Core.Exceptions;
+using System;
 
 namespace Spirebyte.Services.Sprints.Core.Entities
 {
@@ -41,7 +39,7 @@ namespace Spirebyte.Services.Sprints.Core.Entities
             Title = title;
             Description = description;
             ProjectId = projectId;
-            IssueIds = issueIds ?? new Guid[]{};
+            IssueIds = issueIds ?? new Guid[] { };
             CreatedAt = createdAt;
             StartedAt = startedAt;
             StartDate = startDate;

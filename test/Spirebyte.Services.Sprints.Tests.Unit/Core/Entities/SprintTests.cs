@@ -1,8 +1,8 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Spirebyte.Services.Sprints.Core.Entities;
 using Spirebyte.Services.Sprints.Core.Entities.Base;
 using Spirebyte.Services.Sprints.Core.Exceptions;
+using System;
 using Xunit;
 
 namespace Spirebyte.Services.Sprints.Tests.Unit.Core.Entities

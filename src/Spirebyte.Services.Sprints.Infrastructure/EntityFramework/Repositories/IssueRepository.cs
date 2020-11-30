@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using Partytitan.Convey.Persistence.EntityFramework.Repositories.Interfaces;
+﻿using Partytitan.Convey.Persistence.EntityFramework.Repositories.Interfaces;
 using Spirebyte.Services.Sprints.Core.Entities;
 using Spirebyte.Services.Sprints.Core.Repositories;
 using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables;
 using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.Mappers;
+using System;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Repositories
 {
@@ -22,9 +22,9 @@ namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Repositories
 
             return issue?.AsEntity();
         }
-        public async Task<Issue> GetAsync(string sprintkey)
+        public async Task<Issue> GetAsync(string sprintKey)
         {
-            var issue = await _repository.GetAsync(p => p.Key == sprintkey);
+            var issue = await _repository.GetAsync(p => p.Key == sprintKey);
             return issue?.AsEntity();
         }
         public Task<bool> ExistsAsync(Guid id) => _repository.ExistsAsync(c => c.Id == id);

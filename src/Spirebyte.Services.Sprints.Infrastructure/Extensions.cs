@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Convey;
+﻿using Convey;
 using Convey.Auth;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Events;
@@ -45,6 +40,11 @@ using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Repositories;
 using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables;
 using Spirebyte.Services.Sprints.Infrastructure.Exceptions;
 using Spirebyte.Services.Sprints.Infrastructure.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Sprints.Infrastructure
 {

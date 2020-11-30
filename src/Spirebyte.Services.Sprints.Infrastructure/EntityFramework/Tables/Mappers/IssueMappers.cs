@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Spirebyte.Services.Sprints.Core.Entities;
+﻿using Spirebyte.Services.Sprints.Core.Entities;
 
 namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.Mappers
 {

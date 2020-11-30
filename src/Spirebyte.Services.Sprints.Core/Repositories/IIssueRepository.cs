@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Spirebyte.Services.Sprints.Core.Entities;
+using System;
 using System.Threading.Tasks;
-using Spirebyte.Services.Sprints.Core.Entities;
 
 namespace Spirebyte.Services.Sprints.Core.Repositories
 {

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using Convey.CQRS.Commands;
+﻿using Convey.CQRS.Commands;
 using Spirebyte.Services.Sprints.Application.Events;
-using Spirebyte.Services.Sprints.Application.Events.External;
 using Spirebyte.Services.Sprints.Application.Exceptions;
 using Spirebyte.Services.Sprints.Application.Services.Interfaces;
 using Spirebyte.Services.Sprints.Core.Entities;
 using Spirebyte.Services.Sprints.Core.Repositories;
+using System;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Sprints.Application.Commands.Handlers
 {

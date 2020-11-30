@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Spirebyte.Services.Sprints.Core.Entities;
+﻿using Spirebyte.Services.Sprints.Core.Entities;
+using System;
 
 namespace Spirebyte.Services.Sprints.Application.DTO
 {

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using Partytitan.Convey.Persistence.EntityFramework.Repositories.Interfaces;
+﻿using Partytitan.Convey.Persistence.EntityFramework.Repositories.Interfaces;
 using Spirebyte.Services.Sprints.Core.Entities;
 using Spirebyte.Services.Sprints.Core.Repositories;
 using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables;
 using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.Mappers;
+using System;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Repositories
 {
@@ -22,9 +22,9 @@ namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Repositories
 
             return project?.AsEntity();
         }
-        public async Task<string> GetKeyAsync(Guid id)
+        public async Task<string> GetKeyAsync(Guid projectId)
         {
-            var project = await _repository.GetAsync(id);
+            var project = await _repository.GetAsync(projectId);
 
             return project.Key;
         }

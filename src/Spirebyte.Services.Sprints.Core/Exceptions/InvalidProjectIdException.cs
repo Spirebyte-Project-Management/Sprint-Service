@@ -1,5 +1,5 @@
-﻿using System;
-using Spirebyte.Services.Sprints.Core.Exceptions.Base;
+﻿using Spirebyte.Services.Sprints.Core.Exceptions.Base;
+using System;
 
 namespace Spirebyte.Services.Sprints.Core.Exceptions
 {

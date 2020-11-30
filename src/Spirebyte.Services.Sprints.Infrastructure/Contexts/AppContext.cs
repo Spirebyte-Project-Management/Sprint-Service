@@ -1,5 +1,5 @@
-using System;
 using Spirebyte.Services.Sprints.Application;
+using System;
 
 namespace Spirebyte.Services.Sprints.Infrastructure.Contexts
 {

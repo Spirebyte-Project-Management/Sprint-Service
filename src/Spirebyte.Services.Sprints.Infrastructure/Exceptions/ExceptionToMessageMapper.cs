@@ -1,7 +1,7 @@
-﻿using System;
-using Convey.MessageBrokers.RabbitMQ;
+﻿using Convey.MessageBrokers.RabbitMQ;
 using Spirebyte.Services.Sprints.Application.Events.Rejected;
 using Spirebyte.Services.Sprints.Application.Exceptions;
+using System;
 
 namespace Spirebyte.Services.Sprints.Infrastructure.Exceptions
 {

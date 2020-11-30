@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Convey.CQRS.Commands;
-using Spirebyte.Services.Sprints.Application.Events;
+﻿using Convey.CQRS.Commands;
 using Spirebyte.Services.Sprints.Application.Exceptions;
-using Spirebyte.Services.Sprints.Application.Services.Interfaces;
-using Spirebyte.Services.Sprints.Core.Entities;
 using Spirebyte.Services.Sprints.Core.Repositories;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Sprints.Application.Commands.Handlers
 {
@@ -16,15 +10,12 @@ namespace Spirebyte.Services.Sprints.Application.Commands.Handlers
     {
         private readonly ISprintRepository _sprintRepository;
         private readonly IIssueRepository _issueRepository;
-        private readonly IMessageBroker _messageBroker;
 
         public AddIssueToSprintHandler(ISprintRepository sprintRepository,
-            IIssueRepository issueRepository,
-            IMessageBroker messageBroker)
+            IIssueRepository issueRepository)
         {
             _sprintRepository = sprintRepository;
             _issueRepository = issueRepository;
-            _messageBroker = messageBroker;
         }
 
         public async Task HandleAsync(AddIssueToSprint command)

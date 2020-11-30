@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using Convey.CQRS.Events;
+﻿using Convey.CQRS.Events;
 using Convey.MessageBrokers;
 using Convey.MessageBrokers.Outbox;
 using Convey.Types;
+using System;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Sprints.Infrastructure.Decorators
 {

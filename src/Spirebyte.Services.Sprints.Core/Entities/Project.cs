@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Spirebyte.Services.Sprints.Core.Entities.Base;
-using Spirebyte.Services.Sprints.Core.Exceptions;
 
 namespace Spirebyte.Services.Sprints.Core.Entities
 {
