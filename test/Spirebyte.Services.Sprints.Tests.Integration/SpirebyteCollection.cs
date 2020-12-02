@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Spirebyte.Services.Sprints.Tests.Integration
 {
-    [CollectionDefinition("Spirebyte collection")]
+    [CollectionDefinition("Spirebyte collection", DisableParallelization = true)]
     public class SpirebyteCollection : ICollectionFixture<SpirebyteApplicationFactory<Program>>
     {
     }
