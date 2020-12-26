@@ -7,6 +7,6 @@ namespace Spirebyte.Services.Sprints.Application.Queries
 {
     public class GetSprints : IQuery<IEnumerable<SprintDto>>
     {
-        public Guid ProjectId { get; set; }
+        public string ProjectKey { get; set; }
     }
 }

@@ -15,20 +15,26 @@ namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Queries.Hand
     internal sealed class GetSprintsHandler : IQueryHandler<GetSprints, IEnumerable<SprintDto>>
     {
         private readonly IEfRepository<SprintsDbContext, SprintTable, Guid> _sprintRepository;
+        private readonly IEfRepository<SprintsDbContext, ProjectTable, Guid> _projectRepository;
 
-        public GetSprintsHandler(IEfRepository<SprintsDbContext, SprintTable, Guid> sprintRepository)
+        public GetSprintsHandler(IEfRepository<SprintsDbContext, SprintTable, Guid> sprintRepository,
+            IEfRepository<SprintsDbContext, ProjectTable, Guid> projectRepository)
         {
             _sprintRepository = sprintRepository;
+            _projectRepository = projectRepository;
         }
 
         public async Task<IEnumerable<SprintDto>> HandleAsync(GetSprints query)
         {
-            if (query.ProjectId == Guid.Empty)
+            if (string.IsNullOrWhiteSpace(query.ProjectKey))
             {
                 var sprints = await _sprintRepository.Collection.Include(c => c.Issues).ToListAsync();
                 return sprints.Select(p => p.AsDto());
             }
-            var sprintsWithProject = await _sprintRepository.Collection.Include(c => c.Issues).Where(p => p.ProjectId == query.ProjectId).ToListAsync();
+
+            var project = await _projectRepository.GetAsync(p => p.Key == query.ProjectKey);
+
+            var sprintsWithProject = await _sprintRepository.Collection.Include(c => c.Issues).Where(p => p.ProjectId == project.Id).ToListAsync();
 
             return sprintsWithProject.Select(p => p.AsDto());
         }
