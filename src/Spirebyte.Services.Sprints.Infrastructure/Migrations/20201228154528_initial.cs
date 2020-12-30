@@ -3,7 +3,7 @@ using System;
 
 namespace Spirebyte.Services.Sprints.Infrastructure.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -46,8 +46,7 @@ namespace Spirebyte.Services.Sprints.Infrastructure.Migrations
                 name: "Projects",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    Key = table.Column<string>(nullable: true)
+                    Id = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -58,11 +57,10 @@ namespace Spirebyte.Services.Sprints.Infrastructure.Migrations
                 name: "Sprints",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    Key = table.Column<string>(nullable: true),
+                    Id = table.Column<string>(nullable: false),
                     Title = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    ProjectId = table.Column<Guid>(nullable: false),
+                    ProjectId = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     StartedAt = table.Column<DateTime>(nullable: false),
                     StartDate = table.Column<DateTime>(nullable: false),
@@ -78,10 +76,9 @@ namespace Spirebyte.Services.Sprints.Infrastructure.Migrations
                 name: "Issues",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    Key = table.Column<string>(nullable: true),
-                    ProjectId = table.Column<Guid>(nullable: false),
-                    SprintId = table.Column<Guid>(nullable: true)
+                    Id = table.Column<string>(nullable: false),
+                    ProjectId = table.Column<string>(nullable: true),
+                    SprintId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -91,7 +88,7 @@ namespace Spirebyte.Services.Sprints.Infrastructure.Migrations
                         column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Issues_Sprints_SprintId",
                         column: x => x.SprintId,

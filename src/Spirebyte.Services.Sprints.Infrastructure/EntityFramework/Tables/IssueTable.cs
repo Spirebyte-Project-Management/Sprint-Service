@@ -1,15 +1,17 @@
 ﻿using Convey.Types;
-using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables
 {
-    public sealed class IssueTable : IIdentifiable<Guid>
+    public sealed class IssueTable : IIdentifiable<string>
     {
-        public Guid Id { get; set; }
-        public string Key { get; set; }
-        public Guid ProjectId { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public string Id { get; set; }
+        public string ProjectId { get; set; }
         public ProjectTable Project { get; set; }
-        public Guid? SprintId { get; set; }
+        public string? SprintId { get; set; }
         public SprintTable Sprint { get; set; }
     }
 }

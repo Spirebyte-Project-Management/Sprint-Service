@@ -23,9 +23,9 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Commands
         public AddIssueToSprintTests(SpirebyteApplicationFactory<Program> factory)
         {
             _rabbitMqFixture = new RabbitMqFixture();
-            _sprintRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, SprintTable, Guid>>();
-            _projectRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, ProjectTable, Guid>>();
-            _issueRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, IssueTable, Guid>>();
+            _sprintRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, SprintTable, string>>();
+            _projectRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, ProjectTable, string>>();
+            _issueRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, IssueTable, string>>();
             _dbContext = factory.Services.GetRequiredService<SprintsDbContext>();
             factory.Server.AllowSynchronousIO = true;
             _commandHandler = factory.Services.GetRequiredService<ICommandHandler<AddIssueToSprint>>();
@@ -40,9 +40,9 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Commands
         }
 
         private const string Exchange = "sprints";
-        private readonly IEfRepository<SprintsDbContext, SprintTable, Guid> _sprintRepository;
-        private readonly IEfRepository<SprintsDbContext, ProjectTable, Guid> _projectRepository;
-        private readonly IEfRepository<SprintsDbContext, IssueTable, Guid> _issueRepository;
+        private readonly IEfRepository<SprintsDbContext, SprintTable, string> _sprintRepository;
+        private readonly IEfRepository<SprintsDbContext, ProjectTable, string> _projectRepository;
+        private readonly IEfRepository<SprintsDbContext, IssueTable, string> _issueRepository;
         private readonly RabbitMqFixture _rabbitMqFixture;
         private readonly SprintsDbContext _dbContext;
         private readonly ICommandHandler<AddIssueToSprint> _commandHandler;
@@ -51,14 +51,12 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Commands
         [Fact]
         public async Task add_issue_to_sprint_command_should_ass_issue_to_sprint()
         {
-            var projectId = Guid.NewGuid();
-            var projectKey = "project-key";
+            var projectId = "projectKey" + Guid.NewGuid();
 
-            var project = new Project(projectId, projectKey);
+            var project = new Project(projectId);
             await _projectRepository.AddAsync(project.AsDocument());
 
-            var sprintId = Guid.NewGuid();
-            var sprintKey = "key-sprint-1";
+            var sprintId = "sprintKey" + Guid.NewGuid();
             var title = "Title";
             var description = "description";
             var createdAt = DateTime.Now;
@@ -67,17 +65,16 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Commands
             var endDate = DateTime.MaxValue;
             var endedAt = DateTime.MaxValue;
 
-            var sprint = new Sprint(sprintId, sprintKey, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
+            var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
             await _sprintRepository.AddAsync(sprint.AsDocument());
 
-            var issueId = Guid.NewGuid();
-            var issuekey = "key";
+            var issueId = "issueKey" + Guid.NewGuid();
 
-            var issue = new Issue(issueId, issuekey, projectId, null);
+            var issue = new Issue(issueId, projectId, null);
             await _issueRepository.AddAsync(issue.AsDocument());
 
 
-            var command = new AddIssueToSprint(sprintKey, issuekey);
+            var command = new AddIssueToSprint(sprintId, issueId);
 
             // Check if exception is thrown
 
@@ -95,23 +92,20 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Commands
         [Fact]
         public async void add_issue_to_sprint_command_fails_when_sprint_does_not_exist()
         {
-            var projectId = Guid.NewGuid();
-            var projectKey = "project-key";
+            var projectId = "projectKey" + Guid.NewGuid();
 
-            var project = new Project(projectId, projectKey);
+            var project = new Project(projectId);
             await _projectRepository.AddAsync(project.AsDocument());
 
-            var sprintId = Guid.NewGuid();
-            var sprintKey = "key-sprint-1";
+            var sprintId = "sprintKey" + Guid.NewGuid();
 
-            var issueId = Guid.NewGuid();
-            var issuekey = "key";
+            var issueId = "issueKey" + Guid.NewGuid();
 
-            var issue = new Issue(issueId, issuekey, projectId, null);
+            var issue = new Issue(issueId, projectId, null);
             await _issueRepository.AddAsync(issue.AsDocument());
 
 
-            var command = new AddIssueToSprint(sprintKey, issuekey);
+            var command = new AddIssueToSprint(sprintId, issueId);
 
 
             // Check if exception is thrown
@@ -124,14 +118,12 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Commands
         [Fact]
         public async void add_issue_to_sprint_command_fails_when_issue_does_not_exist()
         {
-            var projectId = Guid.NewGuid();
-            var projectKey = "project-key";
+            var projectId = "projectId" + Guid.NewGuid();
 
-            var project = new Project(projectId, projectKey);
+            var project = new Project(projectId);
             await _projectRepository.AddAsync(project.AsDocument());
 
-            var sprintId = Guid.NewGuid();
-            var sprintKey = "key-sprint-1";
+            var sprintId = "sprintKey" + Guid.NewGuid();
             var title = "Title";
             var description = "description";
             var createdAt = DateTime.Now;
@@ -140,13 +132,13 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Commands
             var endDate = DateTime.MaxValue;
             var endedAt = DateTime.MaxValue;
 
-            var sprint = new Sprint(sprintId, sprintKey, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
+            var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
             await _sprintRepository.AddAsync(sprint.AsDocument());
 
-            var issuekey = "key";
+            var issueId = "issueKey" + Guid.NewGuid();
 
 
-            var command = new AddIssueToSprint(sprintKey, issuekey);
+            var command = new AddIssueToSprint(sprintId, issueId);
 
 
             // Check if exception is thrown

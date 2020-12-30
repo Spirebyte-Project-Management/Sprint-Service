@@ -1,20 +1,17 @@
 ﻿using Spirebyte.Services.Sprints.Application.Exceptions.Base;
-using System;
 
 namespace Spirebyte.Services.Sprints.Application.Exceptions
 {
     public class KeyAlreadyExistsException : AppException
     {
         public override string Code { get; } = "key_already_exists";
-        public string Key { get; }
-        public Guid ProjectId { get; }
+        public string SprintId { get; }
 
 
-        public KeyAlreadyExistsException(string key, Guid projectId)
-            : base($"Project with key: {key} already exists.")
+        public KeyAlreadyExistsException(string sprintId)
+            : base($"Sprint with id: {sprintId} already exists.")
         {
-            Key = key;
-            ProjectId = projectId;
+            SprintId = sprintId;
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
         public GetSprintTests(SpirebyteApplicationFactory<Program> factory)
         {
             _rabbitMqFixture = new RabbitMqFixture();
-            _sprintRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, SprintTable, Guid>>();
+            _sprintRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, SprintTable, string>>();
             _dbContext = factory.Services.GetRequiredService<SprintsDbContext>();
             factory.Server.AllowSynchronousIO = true;
             _queryHandler = factory.Services.GetRequiredService<IQueryHandler<GetSprint, SprintDto>>();
@@ -38,7 +38,7 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
         }
 
         private const string Exchange = "sprints";
-        private readonly IEfRepository<SprintsDbContext, SprintTable, Guid> _sprintRepository;
+        private readonly IEfRepository<SprintsDbContext, SprintTable, string> _sprintRepository;
         private readonly RabbitMqFixture _rabbitMqFixture;
         private readonly SprintsDbContext _dbContext;
         private readonly IQueryHandler<GetSprint, SprintDto> _queryHandler;
@@ -47,23 +47,22 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
         [Fact]
         public async Task get_sprint_query_succeeds_when_sprint_exists()
         {
-            var sprintId = Guid.NewGuid();
-            var key = "key-sprint-1";
+            var sprintId = "sprintKey" + Guid.NewGuid();
             var title = "Title";
             var description = "description";
-            var projectId = Guid.NewGuid();
+            var projectId = "projectKey" + Guid.NewGuid();
             var createdAt = DateTime.Now;
             var startedAt = DateTime.MinValue;
             var startDate = DateTime.MinValue;
             var endDate = DateTime.MaxValue;
             var endedAt = DateTime.MaxValue;
 
-            var sprint = new Sprint(sprintId, key, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
+            var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
 
             await _sprintRepository.AddAsync(sprint.AsDocument());
 
 
-            var query = new GetSprint(key);
+            var query = new GetSprint(sprintId);
 
             // Check if exception is thrown
 
@@ -83,9 +82,9 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
         [Fact]
         public async Task get_sprint_query_should_return_null_when_sprint_does_not_exist()
         {
-            var key = "notExistingKey";
+            var sprintId = "notExistingSprintKey";
 
-            var query = new GetSprint(key);
+            var query = new GetSprint(sprintId);
 
             // Check if exception is thrown
 

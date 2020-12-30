@@ -5,11 +5,11 @@ namespace Spirebyte.Services.Sprints.Application.Queries
 {
     public class GetSprint : IQuery<SprintDto>
     {
-        public string Key { get; set; }
+        public string SprintId { get; set; }
 
-        public GetSprint(string key)
+        public GetSprint(string sprintId)
         {
-            Key = key;
+            SprintId = sprintId;
         }
 
     }

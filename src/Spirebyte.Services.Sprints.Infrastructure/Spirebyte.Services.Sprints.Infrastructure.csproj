@@ -19,7 +19,7 @@
     <PackageReference Include="Convey.MessageBrokers.Outbox" Version="0.4.354" />
     <PackageReference Include="Convey.MessageBrokers.RabbitMQ" Version="0.4.354" />
     <PackageReference Include="Convey.Metrics.AppMetrics" Version="0.4.354" />
-    <PackageReference Include="Partytitan.Convey.MessageBrokers.Outbox.EntityFramework" Version="1.0.1" />
+    <PackageReference Include="Partytitan.Convey.MessageBrokers.Outbox.EntityFramework" Version="1.0.2" />
     <PackageReference Include="Partytitan.Convey.Persistence.EntityFramework" Version="1.0.5" />
     <PackageReference Include="Convey.Persistence.Redis" Version="0.4.354" />
     <PackageReference Include="Convey.Security" Version="0.4.354" />

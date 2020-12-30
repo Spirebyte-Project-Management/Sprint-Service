@@ -2,10 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Partytitan.Convey.Persistence.EntityFramework.Repositories.Interfaces;
 using Spirebyte.Services.Sprints.Application.DTO;
+using Spirebyte.Services.Sprints.Application.Exceptions;
 using Spirebyte.Services.Sprints.Application.Queries;
 using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables;
 using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.Mappers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,11 +14,11 @@ namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Queries.Hand
 {
     internal sealed class GetSprintsHandler : IQueryHandler<GetSprints, IEnumerable<SprintDto>>
     {
-        private readonly IEfRepository<SprintsDbContext, SprintTable, Guid> _sprintRepository;
-        private readonly IEfRepository<SprintsDbContext, ProjectTable, Guid> _projectRepository;
+        private readonly IEfRepository<SprintsDbContext, SprintTable, string> _sprintRepository;
+        private readonly IEfRepository<SprintsDbContext, ProjectTable, string> _projectRepository;
 
-        public GetSprintsHandler(IEfRepository<SprintsDbContext, SprintTable, Guid> sprintRepository,
-            IEfRepository<SprintsDbContext, ProjectTable, Guid> projectRepository)
+        public GetSprintsHandler(IEfRepository<SprintsDbContext, SprintTable, string> sprintRepository,
+            IEfRepository<SprintsDbContext, ProjectTable, string> projectRepository)
         {
             _sprintRepository = sprintRepository;
             _projectRepository = projectRepository;
@@ -26,13 +26,17 @@ namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Queries.Hand
 
         public async Task<IEnumerable<SprintDto>> HandleAsync(GetSprints query)
         {
-            if (string.IsNullOrWhiteSpace(query.ProjectKey))
+            if (string.IsNullOrWhiteSpace(query.ProjectId))
             {
-                var sprints = await _sprintRepository.Collection.Include(c => c.Issues).ToListAsync();
-                return sprints.Select(p => p.AsDto());
+                return new List<SprintDto>();
             }
 
-            var project = await _projectRepository.GetAsync(p => p.Key == query.ProjectKey);
+            if (!await _projectRepository.ExistsAsync(p => p.Id == query.ProjectId))
+            {
+                throw new ProjectNotFoundException(query.ProjectId);
+            }
+
+            var project = await _projectRepository.GetAsync(query.ProjectId);
 
             var sprintsWithProject = await _sprintRepository.Collection.Include(c => c.Issues).Where(p => p.ProjectId == project.Id).ToListAsync();
 

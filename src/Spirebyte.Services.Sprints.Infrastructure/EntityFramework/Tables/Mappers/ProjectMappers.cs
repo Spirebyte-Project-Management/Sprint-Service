@@ -5,13 +5,12 @@ namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.Mappe
     internal static class ProjectMappers
     {
         public static Project AsEntity(this ProjectTable table)
-            => new Project(table.Id, table.Key);
+            => new Project(table.Id);
 
         public static ProjectTable AsDocument(this Project entity)
             => new ProjectTable
             {
-                Id = entity.Id,
-                Key = entity.Key
+                Id = entity.Id
             };
     }
 }

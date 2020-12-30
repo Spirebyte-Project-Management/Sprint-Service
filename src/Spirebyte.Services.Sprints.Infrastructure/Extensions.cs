@@ -76,9 +76,9 @@ namespace Spirebyte.Services.Sprints.Infrastructure
                 .AddEntityFramework<SprintsDbContext>()
                 .AddRedis()
                 .AddJaeger()
-                .AddEfRepository<SprintsDbContext, SprintTable, Guid>()
-                .AddEfRepository<SprintsDbContext, ProjectTable, Guid>()
-                .AddEfRepository<SprintsDbContext, IssueTable, Guid>()
+                .AddEfRepository<SprintsDbContext, SprintTable, string>()
+                .AddEfRepository<SprintsDbContext, ProjectTable, string>()
+                .AddEfRepository<SprintsDbContext, IssueTable, string>()
                 .AddWebApiSwaggerDocs()
                 .AddSecurity();
         }
@@ -91,7 +91,6 @@ namespace Spirebyte.Services.Sprints.Infrastructure
                 .UsePublicContracts<ContractAttribute>()
                 .UseRabbitMq()
                 .SubscribeCommand<CreateSprint>()
-                .SubscribeCommand<UpdateSprint>()
                 .SubscribeEvent<ProjectCreated>()
                 .SubscribeEvent<IssueCreated>();
 

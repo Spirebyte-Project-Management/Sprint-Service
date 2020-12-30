@@ -5,28 +5,27 @@ namespace Spirebyte.Services.Sprints.Core.Entities
 {
     public class Sprint
     {
-        public Guid Id { get; set; }
-        public string Key { get; set; }
+        public string Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public Guid ProjectId { get; set; }
-        public Guid[] IssueIds { get; set; }
+        public string ProjectId { get; set; }
+        public string[] IssueIds { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime StartedAt { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime EndedAt { get; set; }
 
-        public Sprint(Guid id, string key, string title, string description, Guid projectId, Guid[] issueIds, DateTime createdAt, DateTime startedAt, DateTime startDate, DateTime endDate, DateTime endedAt)
+        public Sprint(string id, string title, string description, string projectId, string[] issueIds, DateTime createdAt, DateTime startedAt, DateTime startDate, DateTime endDate, DateTime endedAt)
         {
-            if (projectId == Guid.Empty)
+            if (string.IsNullOrWhiteSpace(id))
             {
-                throw new InvalidProjectIdException(projectId);
+                throw new InvalidIdException(id);
             }
 
-            if (string.IsNullOrWhiteSpace(key))
+            if (string.IsNullOrWhiteSpace(projectId))
             {
-                throw new InvalidKeyException(title);
+                throw new InvalidProjectIdException(projectId);
             }
 
             if (string.IsNullOrWhiteSpace(title))
@@ -35,11 +34,10 @@ namespace Spirebyte.Services.Sprints.Core.Entities
             }
 
             Id = id;
-            Key = key;
             Title = title;
             Description = description;
             ProjectId = projectId;
-            IssueIds = issueIds ?? new Guid[] { };
+            IssueIds = issueIds ?? new string[] { };
             CreatedAt = createdAt;
             StartedAt = startedAt;
             StartDate = startDate;

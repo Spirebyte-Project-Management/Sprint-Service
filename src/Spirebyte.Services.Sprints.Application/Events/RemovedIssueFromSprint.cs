@@ -3,13 +3,15 @@
 namespace Spirebyte.Services.Sprints.Application.Events
 {
     [Contract]
-    public class SprintCreated : IEvent
+    public class RemovedIssueFromSprint : IEvent
     {
         public string SprintId { get; }
+        public string IssueId { get; }
 
-        public SprintCreated(string sprintId)
+        public RemovedIssueFromSprint(string sprintId, string issueId)
         {
             SprintId = sprintId;
+            IssueId = issueId;
         }
     }
 }

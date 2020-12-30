@@ -1,23 +1,19 @@
-﻿using System;
-
-namespace Spirebyte.Services.Sprints.Core.Entities
+﻿namespace Spirebyte.Services.Sprints.Core.Entities
 {
     public class Issue
     {
-        public Guid Id { get; private set; }
-        public string Key { get; private set; }
-        public Guid ProjectId { get; private set; }
-        public Guid? SprintId { get; private set; }
+        public string Id { get; private set; }
+        public string ProjectId { get; private set; }
+        public string? SprintId { get; private set; }
 
-        public Issue(Guid id, string key, Guid projectId, Guid? sprintId)
+        public Issue(string id, string projectId, string? sprintId)
         {
             Id = id;
-            Key = key;
             ProjectId = projectId;
             SprintId = sprintId;
         }
 
-        public void AddToSprint(Guid sprintId)
+        public void AddToSprint(string sprintId)
         {
             SprintId = sprintId;
         }

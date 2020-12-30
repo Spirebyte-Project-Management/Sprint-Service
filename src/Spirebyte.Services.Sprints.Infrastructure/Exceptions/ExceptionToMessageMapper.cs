@@ -12,7 +12,7 @@ namespace Spirebyte.Services.Sprints.Infrastructure.Exceptions
 
             {
                 ProjectNotFoundException ex => new SprintCreatedRejected(ex.ProjectId, ex.Message, ex.Code),
-                KeyAlreadyExistsException ex => new SprintCreatedRejected(ex.ProjectId, ex.Message, ex.Code),
+                KeyAlreadyExistsException ex => new SprintCreatedRejected(ex.SprintId, ex.Message, ex.Code),
                 _ => null
             };
     }

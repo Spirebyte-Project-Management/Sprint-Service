@@ -29,7 +29,7 @@ namespace Spirebyte.Services.Sprints.Application.Events.External.Handlers
                 throw new IssueAlreadyCreatedException(@event.IssueId);
             }
 
-            var issue = new Issue(@event.IssueId, @event.IssueKey, @event.ProjectId, null);
+            var issue = new Issue(@event.IssueId, @event.ProjectId, null);
             await _issueRepository.AddAsync(issue);
         }
     }

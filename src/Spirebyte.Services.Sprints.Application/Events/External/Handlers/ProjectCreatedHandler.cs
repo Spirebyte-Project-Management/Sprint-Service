@@ -23,7 +23,7 @@ namespace Spirebyte.Services.Sprints.Application.Events.External.Handlers
                 throw new ProjectAlreadyCreatedException(@event.ProjectId);
             }
 
-            var project = new Project(@event.ProjectId, @event.Key);
+            var project = new Project(@event.ProjectId);
             await _projectRepository.AddAsync(project);
         }
     }

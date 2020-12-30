@@ -1,14 +1,13 @@
 ﻿using Spirebyte.Services.Sprints.Application.Exceptions.Base;
-using System;
 
 namespace Spirebyte.Services.Sprints.Application.Exceptions
 {
     public class IssueAlreadyCreatedException : AppException
     {
         public override string Code { get; } = "issue_already_created";
-        public Guid IssueId { get; }
+        public string IssueId { get; }
 
-        public IssueAlreadyCreatedException(Guid issueId)
+        public IssueAlreadyCreatedException(string issueId)
             : base($"Issue with id: {issueId} was already created.")
         {
             IssueId = issueId;

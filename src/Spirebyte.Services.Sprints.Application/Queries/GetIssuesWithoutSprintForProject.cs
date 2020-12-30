@@ -1,15 +1,14 @@
 ﻿using Convey.CQRS.Queries;
-using System;
 
 namespace Spirebyte.Services.Sprints.Application.Queries
 {
-    public class GetIssuesWithoutSprintForProject : IQuery<Guid[]>
+    public class GetIssuesWithoutSprintForProject : IQuery<string[]>
     {
-        public string ProjectKey { get; set; }
+        public string ProjectId { get; set; }
 
-        public GetIssuesWithoutSprintForProject(string projectKey)
+        public GetIssuesWithoutSprintForProject(string projectId)
         {
-            ProjectKey = projectKey;
+            ProjectId = projectId;
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Spirebyte.Services.Sprints.Application.DTO;
 using Spirebyte.Services.Sprints.Core.Entities;
-using System;
 using System.Linq;
 
 namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.Mappers
@@ -8,13 +7,12 @@ namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.Mappe
     internal static class SprintMappers
     {
         public static Sprint AsEntity(this SprintTable table)
-            => new Sprint(table.Id, table.Key, table.Title, table.Description, table.ProjectId, table.Issues == null ? new Guid[] { } : table.Issues.Select(c => c.Id).ToArray(), table.CreatedAt, table.StartedAt, table.StartDate, table.EndDate, table.EndedAt);
+            => new Sprint(table.Id, table.Title, table.Description, table.ProjectId, table.Issues == null ? new string[] { } : table.Issues.Select(c => c.Id).ToArray(), table.CreatedAt, table.StartedAt, table.StartDate, table.EndDate, table.EndedAt);
 
         public static SprintTable AsDocument(this Sprint entity)
             => new SprintTable
             {
                 Id = entity.Id,
-                Key = entity.Key,
                 Title = entity.Title,
                 Description = entity.Description,
                 ProjectId = entity.ProjectId,
@@ -29,7 +27,6 @@ namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.Mappe
             => new SprintDto
             {
                 Id = table.Id,
-                Key = table.Key,
                 Title = table.Title,
                 Description = table.Description,
                 ProjectId = table.ProjectId,

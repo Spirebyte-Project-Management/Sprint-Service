@@ -1,5 +1,7 @@
 ﻿using Convey.CQRS.Commands;
+using Spirebyte.Services.Sprints.Application.Events;
 using Spirebyte.Services.Sprints.Application.Exceptions;
+using Spirebyte.Services.Sprints.Application.Services.Interfaces;
 using Spirebyte.Services.Sprints.Core.Repositories;
 using System.Threading.Tasks;
 
@@ -10,30 +12,35 @@ namespace Spirebyte.Services.Sprints.Application.Commands.Handlers
     {
         private readonly ISprintRepository _sprintRepository;
         private readonly IIssueRepository _issueRepository;
+        private readonly IMessageBroker _messageBroker;
 
         public RemoveIssueFromSprintHandler(ISprintRepository sprintRepository,
-            IIssueRepository issueRepository)
+            IIssueRepository issueRepository,
+            IMessageBroker messageBroker)
         {
             _sprintRepository = sprintRepository;
             _issueRepository = issueRepository;
+            _messageBroker = messageBroker;
         }
 
         public async Task HandleAsync(RemoveIssueFromSprint command)
         {
-            if (!(await _sprintRepository.ExistsAsync(command.SprintKey)))
+            if (!(await _sprintRepository.ExistsAsync(command.SprintId)))
             {
-                throw new SprintNotFoundException(command.SprintKey);
+                throw new SprintNotFoundException(command.SprintId);
             }
 
-            if (!(await _issueRepository.ExistsAsync(command.IssueKey)))
+            if (!(await _issueRepository.ExistsAsync(command.IssueId)))
             {
-                throw new IssueNotFoundException(command.IssueKey);
+                throw new IssueNotFoundException(command.IssueId);
             }
 
-            var issue = await _issueRepository.GetAsync(command.IssueKey);
+            var issue = await _issueRepository.GetAsync(command.IssueId);
             issue.RemoveFromSprint();
 
             await _issueRepository.UpdateAsync(issue);
+
+            await _messageBroker.PublishAsync(new RemovedIssueFromSprint(command.SprintId, issue.Id));
         }
     }
 }

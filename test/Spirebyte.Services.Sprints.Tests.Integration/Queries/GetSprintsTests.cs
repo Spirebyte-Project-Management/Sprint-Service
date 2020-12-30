@@ -25,7 +25,8 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
         public GetSprintsTests(SpirebyteApplicationFactory<Program> factory)
         {
             _rabbitMqFixture = new RabbitMqFixture();
-            _sprintRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, SprintTable, Guid>>();
+            _sprintRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, SprintTable, string>>();
+            _projectRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, ProjectTable, string>>();
             _dbContext = factory.Services.GetRequiredService<SprintsDbContext>();
             factory.Server.AllowSynchronousIO = true;
             _queryHandler = factory.Services.GetRequiredService<IQueryHandler<GetSprints, IEnumerable<SprintDto>>>();
@@ -40,7 +41,8 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
         }
 
         private const string Exchange = "sprints";
-        private readonly IEfRepository<SprintsDbContext, SprintTable, Guid> _sprintRepository;
+        private readonly IEfRepository<SprintsDbContext, SprintTable, string> _sprintRepository;
+        private readonly IEfRepository<SprintsDbContext, ProjectTable, string> _projectRepository;
         private readonly RabbitMqFixture _rabbitMqFixture;
         private readonly SprintsDbContext _dbContext;
         private readonly IQueryHandler<GetSprints, IEnumerable<SprintDto>> _queryHandler;
@@ -49,27 +51,28 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
         [Fact]
         public async Task get_sprints_query_succeeds_when_a_sprint_exists()
         {
-            var sprintId = Guid.NewGuid();
-            var sprint2Id = Guid.NewGuid();
-            var key = "key-sprint-1";
-            var key2 = "key-sprint-2";
+            var sprintId = "sprintKey" + Guid.NewGuid();
+            var sprint2Id = "sprint2Key" + Guid.NewGuid();
             var title = "Title";
             var description = "description";
-            var projectId = Guid.NewGuid();
+            var projectId = "projectKey" + Guid.NewGuid();
             var createdAt = DateTime.Now;
             var startedAt = DateTime.MinValue;
             var startDate = DateTime.MinValue;
             var endDate = DateTime.MaxValue;
             var endedAt = DateTime.MaxValue;
 
-            var sprint = new Sprint(sprintId, key, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
-            var sprint2 = new Sprint(sprint2Id, key2, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
+            var project = new Project(projectId);
+            await _projectRepository.AddAsync(project.AsDocument());
+
+            var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
+            var sprint2 = new Sprint(sprint2Id, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
 
             await _sprintRepository.AddAsync(sprint.AsDocument());
             await _sprintRepository.AddAsync(sprint2.AsDocument());
 
 
-            var query = new GetSprints();
+            var query = new GetSprints(projectId);
 
             // Check if exception is thrown
 

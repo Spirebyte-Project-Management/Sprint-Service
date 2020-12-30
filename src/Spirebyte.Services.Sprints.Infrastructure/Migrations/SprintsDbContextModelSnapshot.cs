@@ -80,18 +80,14 @@ namespace Spirebyte.Services.Sprints.Infrastructure.Migrations
 
             modelBuilder.Entity("Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.IssueTable", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Key")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("ProjectId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("ProjectId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("SprintId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("SprintId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -104,12 +100,8 @@ namespace Spirebyte.Services.Sprints.Infrastructure.Migrations
 
             modelBuilder.Entity("Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.ProjectTable", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Key")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -118,9 +110,8 @@ namespace Spirebyte.Services.Sprints.Infrastructure.Migrations
 
             modelBuilder.Entity("Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.SprintTable", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -134,11 +125,8 @@ namespace Spirebyte.Services.Sprints.Infrastructure.Migrations
                     b.Property<DateTime>("EndedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Key")
+                    b.Property<string>("ProjectId")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ProjectId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -158,9 +146,7 @@ namespace Spirebyte.Services.Sprints.Infrastructure.Migrations
                 {
                     b.HasOne("Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.ProjectTable", "Project")
                         .WithMany("Issues")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProjectId");
 
                     b.HasOne("Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.SprintTable", "Sprint")
                         .WithMany("Issues")

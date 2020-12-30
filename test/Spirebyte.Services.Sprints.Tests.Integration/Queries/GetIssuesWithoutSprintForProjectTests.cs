@@ -22,12 +22,12 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
         public GetIssuesWithoutSprintForProjectTests(SpirebyteApplicationFactory<Program> factory)
         {
             _rabbitMqFixture = new RabbitMqFixture();
-            _issueRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, IssueTable, Guid>>();
-            _projectRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, ProjectTable, Guid>>();
-            _sprintRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, SprintTable, Guid>>();
+            _issueRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, IssueTable, string>>();
+            _projectRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, ProjectTable, string>>();
+            _sprintRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, SprintTable, string>>();
             _dbContext = factory.Services.GetRequiredService<SprintsDbContext>();
             factory.Server.AllowSynchronousIO = true;
-            _queryHandler = factory.Services.GetRequiredService<IQueryHandler<GetIssuesWithoutSprintForProject, Guid[]>>();
+            _queryHandler = factory.Services.GetRequiredService<IQueryHandler<GetIssuesWithoutSprintForProject, string[]>>();
         }
 
         public async void Dispose()
@@ -39,25 +39,23 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
         }
 
         private const string Exchange = "sprints";
-        private readonly IEfRepository<SprintsDbContext, IssueTable, Guid> _issueRepository;
-        private readonly IEfRepository<SprintsDbContext, ProjectTable, Guid> _projectRepository;
-        private readonly IEfRepository<SprintsDbContext, SprintTable, Guid> _sprintRepository;
+        private readonly IEfRepository<SprintsDbContext, IssueTable, string> _issueRepository;
+        private readonly IEfRepository<SprintsDbContext, ProjectTable, string> _projectRepository;
+        private readonly IEfRepository<SprintsDbContext, SprintTable, string> _sprintRepository;
         private readonly RabbitMqFixture _rabbitMqFixture;
         private readonly SprintsDbContext _dbContext;
-        private readonly IQueryHandler<GetIssuesWithoutSprintForProject, Guid[]> _queryHandler;
+        private readonly IQueryHandler<GetIssuesWithoutSprintForProject, string[]> _queryHandler;
 
 
         [Fact]
         public async Task get_issues_without_sprint_for_project_query_succeeds_when_a_issue_without_sprint_exists()
         {
-            var projectId = Guid.NewGuid();
-            var projectKey = "project-key";
+            var projectId = "projectKey" + Guid.NewGuid();
 
-            var project = new Project(projectId, projectKey);
+            var project = new Project(projectId);
             await _projectRepository.AddAsync(project.AsDocument());
 
-            var sprintId = Guid.NewGuid();
-            var sprintkey = "key-sprint-1";
+            var sprintId = "sprintKey" + Guid.NewGuid();
             var title = "Title";
             var description = "description";
             var createdAt = DateTime.Now;
@@ -66,20 +64,19 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
             var endDate = DateTime.MaxValue;
             var endedAt = DateTime.MaxValue;
 
-            var sprint = new Sprint(sprintId, sprintkey, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
+            var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
 
             await _sprintRepository.AddAsync(sprint.AsDocument());
 
-            var issueId = Guid.NewGuid();
-            var issueWithoutSprintId = Guid.NewGuid();
-            var issuekey = "key";
+            var issueId = "issueKey" + Guid.NewGuid();
+            var issueWithoutSprintId = "issueWithoutSprintKey";
 
-            var issue = new Issue(issueId, issuekey, projectId, sprintId);
-            var issueWithoutSprint = new Issue(issueWithoutSprintId, issuekey, projectId, null);
+            var issue = new Issue(issueId, projectId, sprintId);
+            var issueWithoutSprint = new Issue(issueWithoutSprintId, projectId, null);
             await _issueRepository.AddAsync(issue.AsDocument());
             await _issueRepository.AddAsync(issueWithoutSprint.AsDocument());
 
-            var query = new GetIssuesWithoutSprintForProject(projectKey);
+            var query = new GetIssuesWithoutSprintForProject(projectId);
 
             // Check if exception is thrown
 
@@ -97,14 +94,12 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
         [Fact]
         public async Task get_issues_without_sprint_for_project_query_should_return_empty_when_no_issues_without_sprint_exist()
         {
-            var projectId = Guid.NewGuid();
-            var projectKey = "project-key";
+            var projectId = "projectKey" + Guid.NewGuid();
 
-            var project = new Project(projectId, projectKey);
+            var project = new Project(projectId);
             await _projectRepository.AddAsync(project.AsDocument());
 
-            var sprintId = Guid.NewGuid();
-            var sprintkey = "key-sprint-1";
+            var sprintId = "sprintKey" + Guid.NewGuid();
             var title = "Title";
             var description = "description";
             var createdAt = DateTime.Now;
@@ -113,19 +108,18 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
             var endDate = DateTime.MaxValue;
             var endedAt = DateTime.MaxValue;
 
-            var sprint = new Sprint(sprintId, sprintkey, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
+            var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
             await _sprintRepository.AddAsync(sprint.AsDocument());
 
-            var issueId = Guid.NewGuid();
-            var issue2Id = Guid.NewGuid();
-            var issuekey = "key";
+            var issueId = "issueKey" + Guid.NewGuid();
+            var issue2Id = "issue2Key" + Guid.NewGuid();
 
-            var issue = new Issue(issueId, issuekey, projectId, sprintId);
-            var issue2 = new Issue(issue2Id, issuekey, projectId, sprintId);
+            var issue = new Issue(issueId, projectId, sprintId);
+            var issue2 = new Issue(issue2Id, projectId, sprintId);
             await _issueRepository.AddAsync(issue.AsDocument());
             await _issueRepository.AddAsync(issue2.AsDocument());
 
-            var query = new GetIssuesWithoutSprintForProject(projectKey);
+            var query = new GetIssuesWithoutSprintForProject(projectId);
             // Check if exception is thrown
 
             var requestResult = _queryHandler

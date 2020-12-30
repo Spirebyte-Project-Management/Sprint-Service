@@ -5,13 +5,13 @@ namespace Spirebyte.Services.Sprints.Application.Commands
     [Contract]
     public class RemoveIssueFromSprint : ICommand
     {
-        public string SprintKey { get; set; }
-        public string IssueKey { get; set; }
+        public string SprintId { get; set; }
+        public string IssueId { get; set; }
 
-        public RemoveIssueFromSprint(string sprintKey, string issueKey)
+        public RemoveIssueFromSprint(string sprintId, string issueId)
         {
-            SprintKey = sprintKey;
-            IssueKey = issueKey;
+            SprintId = sprintId;
+            IssueId = issueId;
         }
     }
 }

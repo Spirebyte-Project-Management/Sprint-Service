@@ -14,9 +14,10 @@ using Spirebyte.Services.Sprints.Application.Commands;
 using Spirebyte.Services.Sprints.Application.DTO;
 using Spirebyte.Services.Sprints.Application.Queries;
 using Spirebyte.Services.Sprints.Infrastructure;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Convey.CQRS.Queries;
+using Spirebyte.Services.Sprints.Core.Repositories;
 
 namespace Spirebyte.Services.Sprints.API
 {
@@ -40,14 +41,19 @@ namespace Spirebyte.Services.Sprints.API
                     .UsePingEndpoint()
                     .UseDispatcherEndpoints(endpoints => endpoints
                         .Get("", ctx => ctx.Response.WriteAsync(ctx.RequestServices.GetService<AppOptions>().Name))
-                        .Get<GetSprints, IEnumerable<SprintDto>>("sprints/forproject/{projectKey}")
                         .Get<GetSprints, IEnumerable<SprintDto>>("sprints")
-                        .Get<GetIssuesWithoutSprintForProject, Guid[]>("issuesWithoutSprintForProject/{projectKey}")
-                        .Get<GetSprint, SprintDto>("sprints/{key}")
-                        .Post<AddIssueToSprint>("sprints/{sprintKey}/addIssue/{issueKey}")
-                        .Post<RemoveIssueFromSprint>("sprints/{sprintKey}/removeIssue/{issueKey}")
+                        .Get<GetIssuesWithoutSprintForProject, string[]>("issuesWithoutSprintForProject/{projectId}")
+                        .Get<GetSprint, SprintDto>("sprints/{sprintId}")
+                        .Post<AddIssueToSprint>("sprints/{sprintKey}/addIssue/{issueId}")
+                        .Post<RemoveIssueFromSprint>("sprints/{sprintKey}/removeIssue/{issueId}")
                         .Post<CreateSprint>("sprints",
-                            afterDispatch: (cmd, ctx) => ctx.Response.Created($"sprints/{cmd.SprintId}"))
+                            afterDispatch: async (cmd, ctx) =>
+                            {
+                                var sprint = await ctx.RequestServices.GetService<ISprintRepository>().GetLatest();
+                                await ctx.Response.Created($"sprints/{sprint.Id}",
+                                    await ctx.RequestServices.GetService<IQueryDispatcher>()
+                                        .QueryAsync<GetSprint, SprintDto>(new GetSprint(sprint.Id)));
+                            })
                     ))
                 .UseLogging()
                 .UseVault();

@@ -23,8 +23,8 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Events
         public IssueCreatedTests(SpirebyteApplicationFactory<Program> factory)
         {
             _rabbitMqFixture = new RabbitMqFixture();
-            _issueRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, IssueTable, Guid>>();
-            _projectRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, ProjectTable, Guid>>();
+            _issueRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, IssueTable, string>>();
+            _projectRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, ProjectTable, string>>();
             _dbContext = factory.Services.GetRequiredService<SprintsDbContext>();
             factory.Server.AllowSynchronousIO = true;
             _eventHandler = factory.Services.GetRequiredService<IEventHandler<IssueCreated>>();
@@ -39,8 +39,8 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Events
         }
 
         private const string Exchange = "sprints";
-        private readonly IEfRepository<SprintsDbContext, IssueTable, Guid> _issueRepository;
-        private readonly IEfRepository<SprintsDbContext, ProjectTable, Guid> _projectRepository;
+        private readonly IEfRepository<SprintsDbContext, IssueTable, string> _issueRepository;
+        private readonly IEfRepository<SprintsDbContext, ProjectTable, string> _projectRepository;
         private readonly RabbitMqFixture _rabbitMqFixture;
         private readonly SprintsDbContext _dbContext;
         private readonly IEventHandler<IssueCreated> _eventHandler;
@@ -49,15 +49,13 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Events
         [Fact]
         public async Task issue_created_event_should_add_issue_with_given_data_to_database()
         {
-            var issueId = Guid.NewGuid();
-            var projectId = Guid.NewGuid();
-            var key = "key";
-            var projectKey = "project-key";
+            var issueId = "issueKey" + Guid.NewGuid();
+            var projectId = "projectKey" + Guid.NewGuid();
 
-            var project = new Project(projectId, projectKey);
+            var project = new Project(projectId);
             await _projectRepository.AddAsync(project.AsDocument());
 
-            var externalEvent = new IssueCreated(issueId, key, projectId);
+            var externalEvent = new IssueCreated(issueId, projectId);
 
             // Check if exception is thrown
 
@@ -70,7 +68,6 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Events
 
             issue.Should().NotBeNull();
             issue.Id.Should().Be(issueId);
-            issue.Key.Should().Be(key);
             issue.ProjectId.Should().Be(projectId);
             issue.SprintId.Should().BeNull();
         }
@@ -78,18 +75,16 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Events
         [Fact]
         public async Task issue_created_event_fails_when_issue_with_id_already_exists()
         {
-            var issueId = Guid.NewGuid();
-            var projectId = Guid.NewGuid();
-            var key = "key";
-            var projectKey = "project-key";
+            var issueId = "issueKey" + Guid.NewGuid();
+            var projectId = "projectKey" + Guid.NewGuid();
 
-            var project = new Project(projectId, projectKey);
+            var project = new Project(projectId);
             await _projectRepository.AddAsync(project.AsDocument());
 
-            var issue = new Issue(issueId, key, projectId, null);
+            var issue = new Issue(issueId, projectId, null);
             await _issueRepository.AddAsync(issue.AsDocument());
 
-            var externalEvent = new IssueCreated(issueId, key, projectId);
+            var externalEvent = new IssueCreated(issueId, projectId);
 
             // Check if exception is thrown
 
@@ -101,14 +96,10 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Events
         [Fact]
         public async Task issue_created_event_fails_when_project_with_id_does_not_exist()
         {
-            var issueId = Guid.NewGuid();
-            var projectId = Guid.NewGuid();
-            var sprintId = Guid.NewGuid();
-            var key = "key";
-            var projectKey = "project-key";
+            var issueId = "issueKey" + Guid.NewGuid();
+            var projectId = "projectKey" + Guid.NewGuid();
 
-
-            var externalEvent = new IssueCreated(issueId, key, projectId);
+            var externalEvent = new IssueCreated(issueId, projectId);
 
             // Check if exception is thrown
 

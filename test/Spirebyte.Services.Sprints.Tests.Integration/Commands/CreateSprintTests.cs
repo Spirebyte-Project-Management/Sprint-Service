@@ -23,8 +23,8 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Commands
         public CreateSprintTests(SpirebyteApplicationFactory<Program> factory)
         {
             _rabbitMqFixture = new RabbitMqFixture();
-            _sprintRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, SprintTable, Guid>>();
-            _projectsRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, ProjectTable, Guid>>();
+            _sprintRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, SprintTable, string>>();
+            _projectsRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, ProjectTable, string>>();
             _dbContext = factory.Services.GetRequiredService<SprintsDbContext>();
             factory.Server.AllowSynchronousIO = true;
             _commandHandler = factory.Services.GetRequiredService<ICommandHandler<CreateSprint>>();
@@ -39,8 +39,8 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Commands
         }
 
         private const string Exchange = "sprints";
-        private readonly IEfRepository<SprintsDbContext, SprintTable, Guid> _sprintRepository;
-        private readonly IEfRepository<SprintsDbContext, ProjectTable, Guid> _projectsRepository;
+        private readonly IEfRepository<SprintsDbContext, SprintTable, string> _sprintRepository;
+        private readonly IEfRepository<SprintsDbContext, ProjectTable, string> _projectsRepository;
         private readonly RabbitMqFixture _rabbitMqFixture;
         private readonly SprintsDbContext _dbContext;
         private readonly ICommandHandler<CreateSprint> _commandHandler;
@@ -49,19 +49,20 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Commands
         [Fact]
         public async Task create_sprint_command_should_add_sprint_with_given_data_to_database()
         {
-            var sprintId = Guid.NewGuid();
+            var sprintId = "sprintKey" + Guid.NewGuid();
             var title = "Title";
             var description = "description";
-            var projectId = Guid.NewGuid();
-            var projectKey = "key";
+            var projectId = "projectKey" + Guid.NewGuid();
             var startDate = DateTime.MinValue;
             var endDate = DateTime.MaxValue;
 
-            var project = new Project(projectId, projectKey);
+            var expectedSprintKey = $"{projectId}-Sprint-1";
+
+            var project = new Project(projectId);
             await _projectsRepository.AddAsync(project.AsDocument());
 
 
-            var command = new CreateSprint(sprintId, title, description, projectId, projectKey, startDate, endDate);
+            var command = new CreateSprint(sprintId, title, description, projectId, startDate, endDate);
 
             // Check if exception is thrown
 
@@ -70,10 +71,10 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Commands
                 .Should().NotThrow();
 
 
-            var sprint = await _sprintRepository.GetAsync(command.SprintId);
+            var sprint = await _sprintRepository.GetAsync(expectedSprintKey);
 
             sprint.Should().NotBeNull();
-            sprint.Id.Should().Be(sprintId);
+            sprint.Id.Should().Be(expectedSprintKey);
             sprint.Title.Should().Be(title);
             sprint.Description.Should().Be(description);
             sprint.ProjectId.Should().Be(projectId);
@@ -84,15 +85,14 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Commands
         [Fact]
         public void create_sprint_command_fails_when_project_does_not_exist()
         {
-            var sprintId = Guid.NewGuid();
+            var sprintId = "sprintId" + Guid.NewGuid();
             var title = "Title";
             var description = "description";
-            var projectId = Guid.NewGuid();
-            var projectKey = "key";
+            var projectId = "projectId" + Guid.NewGuid();
             var startDate = DateTime.MinValue;
             var endDate = DateTime.MaxValue;
 
-            var command = new CreateSprint(sprintId, title, description, projectId, projectKey, startDate, endDate);
+            var command = new CreateSprint(sprintId, title, description, projectId, startDate, endDate);
 
 
             // Check if exception is thrown

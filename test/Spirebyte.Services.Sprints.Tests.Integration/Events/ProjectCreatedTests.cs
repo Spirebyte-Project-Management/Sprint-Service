@@ -23,7 +23,7 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Events
         public ProjectCreatedTests(SpirebyteApplicationFactory<Program> factory)
         {
             _rabbitMqFixture = new RabbitMqFixture();
-            _projectsRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, ProjectTable, Guid>>();
+            _projectsRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, ProjectTable, string>>();
             _dbContext = factory.Services.GetRequiredService<SprintsDbContext>();
             factory.Server.AllowSynchronousIO = true;
             _eventHandler = factory.Services.GetRequiredService<IEventHandler<ProjectCreated>>();
@@ -38,7 +38,7 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Events
         }
 
         private const string Exchange = "sprints";
-        private readonly IEfRepository<SprintsDbContext, ProjectTable, Guid> _projectsRepository;
+        private readonly IEfRepository<SprintsDbContext, ProjectTable, string> _projectsRepository;
         private readonly RabbitMqFixture _rabbitMqFixture;
         private readonly SprintsDbContext _dbContext;
         private readonly IEventHandler<ProjectCreated> _eventHandler;
@@ -47,11 +47,9 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Events
         [Fact]
         public async Task project_created_event_should_add_project_with_given_data_to_database()
         {
-            var projectId = Guid.NewGuid();
-            var key = "key";
+            var projectId = "projectKey" + Guid.NewGuid();
 
-
-            var externalEvent = new ProjectCreated(projectId, key);
+            var externalEvent = new ProjectCreated(projectId);
 
             // Check if exception is thrown
 
@@ -64,19 +62,17 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Events
 
             project.Should().NotBeNull();
             project.Id.Should().Be(projectId);
-            project.Key.Should().Be(key);
         }
 
         [Fact]
         public async Task project_created_event_fails_when_project_with_id_already_exists()
         {
-            var projectId = Guid.NewGuid();
-            var key = "key";
+            var projectId = "projectKey" + Guid.NewGuid();
 
-            var project = new Project(projectId, key);
+            var project = new Project(projectId);
             await _projectsRepository.AddAsync(project.AsDocument());
 
-            var externalEvent = new ProjectCreated(projectId, key);
+            var externalEvent = new ProjectCreated(projectId);
 
             // Check if exception is thrown
 
