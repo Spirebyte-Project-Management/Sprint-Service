@@ -44,6 +44,7 @@ namespace Spirebyte.Services.Sprints.API
                         .Get<GetSprints, IEnumerable<SprintDto>>("sprints")
                         .Get<GetIssuesWithoutSprintForProject, string[]>("issuesWithoutSprintForProject/{projectId}")
                         .Get<GetSprint, SprintDto>("sprints/{sprintId}")
+                        .Post<StartSprint>("sprints/{sprintKey}/start")
                         .Post<AddIssueToSprint>("sprints/{sprintKey}/addIssue/{issueId}")
                         .Post<RemoveIssueFromSprint>("sprints/{sprintKey}/removeIssue/{issueId}")
                         .Post<CreateSprint>("sprints",

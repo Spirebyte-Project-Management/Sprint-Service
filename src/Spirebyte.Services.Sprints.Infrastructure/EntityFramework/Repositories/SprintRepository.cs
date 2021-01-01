@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Partytitan.Convey.Persistence.EntityFramework.Repositories.Interfaces;
 using Spirebyte.Services.Sprints.Core.Entities;
@@ -39,6 +40,14 @@ namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Repositories
 
         public Task AddAsync(Sprint sprint) => _repository.AddAsync(sprint.AsDocument());
 
-        public Task UpdateAsync(Sprint sprint) => _repository.UpdateAsync(sprint.AsDocument());
+        public async Task UpdateAsync(Sprint sprint)
+        {
+            var sprintToUpdate = await _repository.GetAsync(sprint.Id);
+
+            sprintToUpdate.StartedAt = sprint.StartedAt != DateTime.MinValue ? sprint.StartedAt : sprintToUpdate.StartedAt;
+            sprintToUpdate.EndedAt = sprint.EndedAt != DateTime.MinValue ? sprint.EndedAt : sprintToUpdate.EndedAt;
+
+            await _repository.SaveChangesAsync();
+        }
     }
 }
