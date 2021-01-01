@@ -3,11 +3,11 @@
 namespace Spirebyte.Services.Sprints.Application.Commands
 {
     [Contract]
-    public class StartSprint : ICommand
+    public class EndSprint : ICommand
     {
         public string Id { get; set; }
 
-        public StartSprint(string id)
+        public EndSprint(string id)
         {
             Id = id;
         }

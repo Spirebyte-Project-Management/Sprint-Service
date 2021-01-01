@@ -1,4 +1,5 @@
 using Convey;
+using Convey.CQRS.Queries;
 using Convey.Logging;
 using Convey.Secrets.Vault;
 using Convey.Types;
@@ -13,11 +14,10 @@ using Spirebyte.Services.Sprints.Application;
 using Spirebyte.Services.Sprints.Application.Commands;
 using Spirebyte.Services.Sprints.Application.DTO;
 using Spirebyte.Services.Sprints.Application.Queries;
+using Spirebyte.Services.Sprints.Core.Repositories;
 using Spirebyte.Services.Sprints.Infrastructure;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Convey.CQRS.Queries;
-using Spirebyte.Services.Sprints.Core.Repositories;
 
 namespace Spirebyte.Services.Sprints.API
 {
@@ -45,6 +45,7 @@ namespace Spirebyte.Services.Sprints.API
                         .Get<GetIssuesWithoutSprintForProject, string[]>("issuesWithoutSprintForProject/{projectId}")
                         .Get<GetSprint, SprintDto>("sprints/{sprintId}")
                         .Post<StartSprint>("sprints/{sprintKey}/start")
+                        .Post<EndSprint>("sprints/{sprintKey}/end")
                         .Post<AddIssueToSprint>("sprints/{sprintKey}/addIssue/{issueId}")
                         .Post<RemoveIssueFromSprint>("sprints/{sprintKey}/removeIssue/{issueId}")
                         .Post<CreateSprint>("sprints",

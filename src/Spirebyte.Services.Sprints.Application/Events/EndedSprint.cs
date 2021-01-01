@@ -3,11 +3,11 @@
 namespace Spirebyte.Services.Sprints.Application.Events
 {
     [Contract]
-    public class StartedSprint : IEvent
+    public class EndedSprint : IEvent
     {
         public string SprintId { get; }
 
-        public StartedSprint(string sprintId)
+        public EndedSprint(string sprintId)
         {
             SprintId = sprintId;
         }

@@ -49,5 +49,10 @@ namespace Spirebyte.Services.Sprints.Core.Entities
         {
             StartedAt = DateTime.Now;
         }
+
+        public void End()
+        {
+            EndedAt = DateTime.Now;
+        }
     }
 }
