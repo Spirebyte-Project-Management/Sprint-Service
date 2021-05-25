@@ -10,7 +10,9 @@ using Convey.LoadBalancing.Fabio;
 using Convey.MessageBrokers;
 using Convey.MessageBrokers.CQRS;
 using Convey.MessageBrokers.Outbox;
+using Convey.MessageBrokers.Outbox.Mongo;
 using Convey.MessageBrokers.RabbitMQ;
+using Convey.Persistence.MongoDB;
 using Convey.Persistence.Redis;
 using Convey.Security;
 using Convey.Tracing.Jaeger;
@@ -24,8 +26,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Partytitan.Convey.MessageBrokers.Outbox.EntityFramework;
-using Partytitan.Convey.Persistence.EntityFramework;
 using Spirebyte.Services.Sprints.Application;
 using Spirebyte.Services.Sprints.Application.Clients.Interfaces;
 using Spirebyte.Services.Sprints.Application.Commands;
@@ -35,10 +35,9 @@ using Spirebyte.Services.Sprints.Core.Repositories;
 using Spirebyte.Services.Sprints.Infrastructure.Clients.HTTP;
 using Spirebyte.Services.Sprints.Infrastructure.Contexts;
 using Spirebyte.Services.Sprints.Infrastructure.Decorators;
-using Spirebyte.Services.Sprints.Infrastructure.EntityFramework;
-using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Repositories;
-using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables;
 using Spirebyte.Services.Sprints.Infrastructure.Exceptions;
+using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
+using Spirebyte.Services.Sprints.Infrastructure.Mongo.Repositories;
 using Spirebyte.Services.Sprints.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
@@ -72,13 +71,13 @@ namespace Spirebyte.Services.Sprints.Infrastructure
                 .AddFabio()
                 .AddExceptionToMessageMapper<ExceptionToMessageMapper>()
                 .AddRabbitMq(plugins: p => p.AddJaegerRabbitMqPlugin())
-                .AddMessageOutbox(o => o.AddEntityFramework<SprintsDbContext>())
-                .AddEntityFramework<SprintsDbContext>()
+                .AddMessageOutbox(o => o.AddMongo())
+                .AddMongo()
                 .AddRedis()
                 .AddJaeger()
-                .AddEfRepository<SprintsDbContext, SprintTable, string>()
-                .AddEfRepository<SprintsDbContext, ProjectTable, string>()
-                .AddEfRepository<SprintsDbContext, IssueTable, string>()
+                .AddMongoRepository<IssueDocument, string>("issues")
+                .AddMongoRepository<ProjectDocument, string>("projects")
+                .AddMongoRepository<SprintDocument, string>("sprints")
                 .AddWebApiSwaggerDocs()
                 .AddSecurity();
         }

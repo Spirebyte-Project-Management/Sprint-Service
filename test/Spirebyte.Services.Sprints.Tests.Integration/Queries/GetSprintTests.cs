@@ -1,14 +1,12 @@
 ﻿using Convey.CQRS.Queries;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Partytitan.Convey.Persistence.EntityFramework.Repositories.Interfaces;
 using Spirebyte.Services.Sprints.API;
 using Spirebyte.Services.Sprints.Application.DTO;
 using Spirebyte.Services.Sprints.Application.Queries;
 using Spirebyte.Services.Sprints.Core.Entities;
-using Spirebyte.Services.Sprints.Infrastructure.EntityFramework;
-using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables;
-using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.Mappers;
+using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
+using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers;
 using Spirebyte.Services.Sprints.Tests.Shared.Factories;
 using Spirebyte.Services.Sprints.Tests.Shared.Fixtures;
 using System;
@@ -23,24 +21,19 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
         public GetSprintTests(SpirebyteApplicationFactory<Program> factory)
         {
             _rabbitMqFixture = new RabbitMqFixture();
-            _sprintRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, SprintTable, string>>();
-            _dbContext = factory.Services.GetRequiredService<SprintsDbContext>();
+            _sprintMongoDbFixture = new MongoDbFixture<SprintDocument, string>("sprints");
             factory.Server.AllowSynchronousIO = true;
             _queryHandler = factory.Services.GetRequiredService<IQueryHandler<GetSprint, SprintDto>>();
         }
 
         public async void Dispose()
         {
-            _dbContext.Sprints.RemoveRange(_dbContext.Sprints);
-            _dbContext.Projects.RemoveRange(_dbContext.Projects);
-            _dbContext.Issues.RemoveRange(_dbContext.Issues);
-            await _dbContext.SaveChangesAsync();
+            _sprintMongoDbFixture.Dispose();
         }
 
         private const string Exchange = "sprints";
-        private readonly IEfRepository<SprintsDbContext, SprintTable, string> _sprintRepository;
+        private readonly MongoDbFixture<SprintDocument, string> _sprintMongoDbFixture;
         private readonly RabbitMqFixture _rabbitMqFixture;
-        private readonly SprintsDbContext _dbContext;
         private readonly IQueryHandler<GetSprint, SprintDto> _queryHandler;
 
 
@@ -59,7 +52,7 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
 
             var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
 
-            await _sprintRepository.AddAsync(sprint.AsDocument());
+            await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
 
 
             var query = new GetSprint(sprintId);

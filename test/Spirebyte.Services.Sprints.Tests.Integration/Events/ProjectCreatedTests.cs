@@ -1,14 +1,12 @@
 ﻿using Convey.CQRS.Events;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Partytitan.Convey.Persistence.EntityFramework.Repositories.Interfaces;
 using Spirebyte.Services.Sprints.API;
 using Spirebyte.Services.Sprints.Application.Events.External;
 using Spirebyte.Services.Sprints.Application.Exceptions;
 using Spirebyte.Services.Sprints.Core.Entities;
-using Spirebyte.Services.Sprints.Infrastructure.EntityFramework;
-using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables;
-using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.Mappers;
+using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
+using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers;
 using Spirebyte.Services.Sprints.Tests.Shared.Factories;
 using Spirebyte.Services.Sprints.Tests.Shared.Fixtures;
 using System;
@@ -23,24 +21,19 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Events
         public ProjectCreatedTests(SpirebyteApplicationFactory<Program> factory)
         {
             _rabbitMqFixture = new RabbitMqFixture();
-            _projectsRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, ProjectTable, string>>();
-            _dbContext = factory.Services.GetRequiredService<SprintsDbContext>();
+            _projectMongoDbFixture = new MongoDbFixture<ProjectDocument, string>("projects");
             factory.Server.AllowSynchronousIO = true;
             _eventHandler = factory.Services.GetRequiredService<IEventHandler<ProjectCreated>>();
         }
 
         public async void Dispose()
         {
-            _dbContext.Sprints.RemoveRange(_dbContext.Sprints);
-            _dbContext.Projects.RemoveRange(_dbContext.Projects);
-            _dbContext.Issues.RemoveRange(_dbContext.Issues);
-            await _dbContext.SaveChangesAsync();
+            _projectMongoDbFixture.Dispose();
         }
 
         private const string Exchange = "sprints";
-        private readonly IEfRepository<SprintsDbContext, ProjectTable, string> _projectsRepository;
+        private readonly MongoDbFixture<ProjectDocument, string> _projectMongoDbFixture;
         private readonly RabbitMqFixture _rabbitMqFixture;
-        private readonly SprintsDbContext _dbContext;
         private readonly IEventHandler<ProjectCreated> _eventHandler;
 
 
@@ -58,7 +51,7 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Events
                 .Should().NotThrow();
 
 
-            var project = await _projectsRepository.GetAsync(projectId);
+            var project = await _projectMongoDbFixture.GetAsync(projectId);
 
             project.Should().NotBeNull();
             project.Id.Should().Be(projectId);
@@ -70,7 +63,7 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Events
             var projectId = "projectKey" + Guid.NewGuid();
 
             var project = new Project(projectId);
-            await _projectsRepository.AddAsync(project.AsDocument());
+            await _projectMongoDbFixture.InsertAsync(project.AsDocument());
 
             var externalEvent = new ProjectCreated(projectId);
 

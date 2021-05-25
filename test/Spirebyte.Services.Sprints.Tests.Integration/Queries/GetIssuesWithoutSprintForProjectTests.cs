@@ -1,13 +1,11 @@
 ﻿using Convey.CQRS.Queries;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Partytitan.Convey.Persistence.EntityFramework.Repositories.Interfaces;
 using Spirebyte.Services.Sprints.API;
 using Spirebyte.Services.Sprints.Application.Queries;
 using Spirebyte.Services.Sprints.Core.Entities;
-using Spirebyte.Services.Sprints.Infrastructure.EntityFramework;
-using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables;
-using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.Mappers;
+using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
+using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers;
 using Spirebyte.Services.Sprints.Tests.Shared.Factories;
 using Spirebyte.Services.Sprints.Tests.Shared.Fixtures;
 using System;
@@ -22,28 +20,25 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
         public GetIssuesWithoutSprintForProjectTests(SpirebyteApplicationFactory<Program> factory)
         {
             _rabbitMqFixture = new RabbitMqFixture();
-            _issueRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, IssueTable, string>>();
-            _projectRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, ProjectTable, string>>();
-            _sprintRepository = factory.Services.GetRequiredService<IEfRepository<SprintsDbContext, SprintTable, string>>();
-            _dbContext = factory.Services.GetRequiredService<SprintsDbContext>();
+            _sprintMongoDbFixture = new MongoDbFixture<SprintDocument, string>("sprints");
+            _projectMongoDbFixture = new MongoDbFixture<ProjectDocument, string>("projects");
+            _issueMongoDbFixture = new MongoDbFixture<IssueDocument, string>("issues");
             factory.Server.AllowSynchronousIO = true;
             _queryHandler = factory.Services.GetRequiredService<IQueryHandler<GetIssuesWithoutSprintForProject, string[]>>();
         }
 
         public async void Dispose()
         {
-            _dbContext.Sprints.RemoveRange(_dbContext.Sprints);
-            _dbContext.Projects.RemoveRange(_dbContext.Projects);
-            _dbContext.Issues.RemoveRange(_dbContext.Issues);
-            await _dbContext.SaveChangesAsync();
+            _sprintMongoDbFixture.Dispose();
+            _projectMongoDbFixture.Dispose();
+            _issueMongoDbFixture.Dispose();
         }
 
         private const string Exchange = "sprints";
-        private readonly IEfRepository<SprintsDbContext, IssueTable, string> _issueRepository;
-        private readonly IEfRepository<SprintsDbContext, ProjectTable, string> _projectRepository;
-        private readonly IEfRepository<SprintsDbContext, SprintTable, string> _sprintRepository;
+        private readonly MongoDbFixture<SprintDocument, string> _sprintMongoDbFixture;
+        private readonly MongoDbFixture<ProjectDocument, string> _projectMongoDbFixture;
+        private readonly MongoDbFixture<IssueDocument, string> _issueMongoDbFixture;
         private readonly RabbitMqFixture _rabbitMqFixture;
-        private readonly SprintsDbContext _dbContext;
         private readonly IQueryHandler<GetIssuesWithoutSprintForProject, string[]> _queryHandler;
 
 
@@ -53,7 +48,7 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
             var projectId = "projectKey" + Guid.NewGuid();
 
             var project = new Project(projectId);
-            await _projectRepository.AddAsync(project.AsDocument());
+            await _projectMongoDbFixture.InsertAsync(project.AsDocument());
 
             var sprintId = "sprintKey" + Guid.NewGuid();
             var title = "Title";
@@ -66,15 +61,15 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
 
             var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
 
-            await _sprintRepository.AddAsync(sprint.AsDocument());
+            await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
 
             var issueId = "issueKey" + Guid.NewGuid();
             var issueWithoutSprintId = "issueWithoutSprintKey";
 
             var issue = new Issue(issueId, projectId, sprintId);
             var issueWithoutSprint = new Issue(issueWithoutSprintId, projectId, null);
-            await _issueRepository.AddAsync(issue.AsDocument());
-            await _issueRepository.AddAsync(issueWithoutSprint.AsDocument());
+            await _issueMongoDbFixture.InsertAsync(issue.AsDocument());
+            await _issueMongoDbFixture.InsertAsync(issueWithoutSprint.AsDocument());
 
             var query = new GetIssuesWithoutSprintForProject(projectId);
 
@@ -97,7 +92,7 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
             var projectId = "projectKey" + Guid.NewGuid();
 
             var project = new Project(projectId);
-            await _projectRepository.AddAsync(project.AsDocument());
+            await _projectMongoDbFixture.InsertAsync(project.AsDocument());
 
             var sprintId = "sprintKey" + Guid.NewGuid();
             var title = "Title";
@@ -109,15 +104,15 @@ namespace Spirebyte.Services.Sprints.Tests.Integration.Queries
             var endedAt = DateTime.MaxValue;
 
             var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
-            await _sprintRepository.AddAsync(sprint.AsDocument());
+            await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
 
             var issueId = "issueKey" + Guid.NewGuid();
             var issue2Id = "issue2Key" + Guid.NewGuid();
 
             var issue = new Issue(issueId, projectId, sprintId);
             var issue2 = new Issue(issue2Id, projectId, sprintId);
-            await _issueRepository.AddAsync(issue.AsDocument());
-            await _issueRepository.AddAsync(issue2.AsDocument());
+            await _issueMongoDbFixture.InsertAsync(issue.AsDocument());
+            await _issueMongoDbFixture.InsertAsync(issue2.AsDocument());
 
             var query = new GetIssuesWithoutSprintForProject(projectId);
             // Check if exception is thrown

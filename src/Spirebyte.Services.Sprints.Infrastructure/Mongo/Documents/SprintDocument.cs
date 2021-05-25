@@ -1,15 +1,11 @@
 ﻿using Convey.Types;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables
+namespace Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents
 {
-    public class SprintTable : IIdentifiable<string>
+    public sealed class SprintDocument : IIdentifiable<string>
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
@@ -19,6 +15,6 @@ namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime EndedAt { get; set; }
-        public ICollection<IssueTable> Issues { get; set; }
+        public IEnumerable<string> IssueIds { get; set; }
     }
 }

@@ -9,6 +9,5 @@ namespace Spirebyte.Services.Sprints.Core.Repositories
         Task<bool> ExistsAsync(string id);
         Task AddAsync(Issue issue);
         Task UpdateAsync(Issue issue);
-        Task SaveChangesAsync();
     }
 }

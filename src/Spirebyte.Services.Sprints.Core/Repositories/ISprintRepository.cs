@@ -6,7 +6,7 @@ namespace Spirebyte.Services.Sprints.Core.Repositories
     public interface ISprintRepository
     {
         Task<Sprint> GetAsync(string sprintId);
-        Task<int> GetSprintCountOfProjectAsync(string projectId);
+        Task<long> GetSprintCountOfProjectAsync(string projectId);
         Task<Sprint> GetLatest();
         Task<bool> ExistsAsync(string sprintId);
         Task AddAsync(Sprint sprint);

@@ -1,17 +1,17 @@
-﻿using Partytitan.Convey.Persistence.EntityFramework.Repositories.Interfaces;
+﻿using Convey.Persistence.MongoDB;
 using Spirebyte.Services.Sprints.Core.Entities;
 using Spirebyte.Services.Sprints.Core.Repositories;
-using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables;
-using Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Tables.Mappers;
+using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
+using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers;
 using System.Threading.Tasks;
 
-namespace Spirebyte.Services.Sprints.Infrastructure.EntityFramework.Repositories
+namespace Spirebyte.Services.Sprints.Infrastructure.Mongo.Repositories
 {
     internal sealed class ProjectRepository : IProjectRepository
     {
-        private readonly IEfRepository<SprintsDbContext, ProjectTable, string> _repository;
+        private readonly IMongoRepository<ProjectDocument, string> _repository;
 
-        public ProjectRepository(IEfRepository<SprintsDbContext, ProjectTable, string> repository)
+        public ProjectRepository(IMongoRepository<ProjectDocument, string> repository)
         {
             _repository = repository;
         }
