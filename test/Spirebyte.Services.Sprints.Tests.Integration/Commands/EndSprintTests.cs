@@ -1,4 +1,6 @@
-﻿using Convey.CQRS.Commands;
+﻿using System;
+using System.Threading.Tasks;
+using Convey.CQRS.Commands;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Spirebyte.Services.Sprints.API;
@@ -9,123 +11,122 @@ using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers;
 using Spirebyte.Services.Sprints.Tests.Shared.Factories;
 using Spirebyte.Services.Sprints.Tests.Shared.Fixtures;
-using System;
-using System.Threading.Tasks;
 using Xunit;
 
-namespace Spirebyte.Services.Sprints.Tests.Integration.Commands
+namespace Spirebyte.Services.Sprints.Tests.Integration.Commands;
+
+[Collection("Spirebyte collection")]
+public class EndSprintTests : IDisposable
 {
-    [Collection("Spirebyte collection")]
-    public class EndSprintTests : IDisposable
+    private const string Exchange = "sprints";
+    private readonly ICommandHandler<EndSprint> _commandHandler;
+    private readonly MongoDbFixture<IssueDocument, string> _issueMongoDbFixture;
+    private readonly MongoDbFixture<ProjectDocument, string> _projectMongoDbFixture;
+    private readonly RabbitMqFixture _rabbitMqFixture;
+    private readonly MongoDbFixture<SprintDocument, string> _sprintMongoDbFixture;
+
+    public EndSprintTests(SpirebyteApplicationFactory<Program> factory)
     {
-        public EndSprintTests(SpirebyteApplicationFactory<Program> factory)
-        {
-            _rabbitMqFixture = new RabbitMqFixture();
-            _sprintMongoDbFixture = new MongoDbFixture<SprintDocument, string>("sprints");
-            _projectMongoDbFixture = new MongoDbFixture<ProjectDocument, string>("projects");
-            _issueMongoDbFixture = new MongoDbFixture<IssueDocument, string>("issues");
-            factory.Server.AllowSynchronousIO = true;
-            _commandHandler = factory.Services.GetRequiredService<ICommandHandler<EndSprint>>();
-        }
+        _rabbitMqFixture = new RabbitMqFixture();
+        _sprintMongoDbFixture = new MongoDbFixture<SprintDocument, string>("sprints");
+        _projectMongoDbFixture = new MongoDbFixture<ProjectDocument, string>("projects");
+        _issueMongoDbFixture = new MongoDbFixture<IssueDocument, string>("issues");
+        factory.Server.AllowSynchronousIO = true;
+        _commandHandler = factory.Services.GetRequiredService<ICommandHandler<EndSprint>>();
+    }
 
-        public async void Dispose()
-        {
-            _sprintMongoDbFixture.Dispose();
-            _projectMongoDbFixture.Dispose();
-            _issueMongoDbFixture.Dispose();
-        }
-
-        private const string Exchange = "sprints";
-        private readonly MongoDbFixture<SprintDocument, string> _sprintMongoDbFixture;
-        private readonly MongoDbFixture<ProjectDocument, string> _projectMongoDbFixture;
-        private readonly MongoDbFixture<IssueDocument, string> _issueMongoDbFixture;
-        private readonly RabbitMqFixture _rabbitMqFixture;
-        private readonly ICommandHandler<EndSprint> _commandHandler;
+    public async void Dispose()
+    {
+        _sprintMongoDbFixture.Dispose();
+        _projectMongoDbFixture.Dispose();
+        _issueMongoDbFixture.Dispose();
+    }
 
 
-        [Fact]
-        public async Task end_sprint_command_should_set_endedAt()
-        {
-            var projectId = "projectKey" + Guid.NewGuid();
+    [Fact]
+    public async Task end_sprint_command_should_set_endedAt()
+    {
+        var projectId = "projectKey" + Guid.NewGuid();
 
-            var project = new Project(projectId);
-            await _projectMongoDbFixture.InsertAsync(project.AsDocument());
+        var project = new Project(projectId);
+        await _projectMongoDbFixture.InsertAsync(project.AsDocument());
 
-            var sprintId = "sprintKey" + Guid.NewGuid();
-            var title = "Title";
-            var description = "description";
-            var createdAt = DateTime.Now;
-            var startedAt = DateTime.Now;
-            var startDate = DateTime.MinValue;
-            var endDate = DateTime.MaxValue;
-            var endedAt = DateTime.MaxValue;
+        var sprintId = "sprintKey" + Guid.NewGuid();
+        var title = "Title";
+        var description = "description";
+        var createdAt = DateTime.Now;
+        var startedAt = DateTime.Now;
+        var startDate = DateTime.MinValue;
+        var endDate = DateTime.MaxValue;
+        var endedAt = DateTime.MaxValue;
 
-            var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
-            await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
+        var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate,
+            endedAt);
+        await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
 
-            var command = new EndSprint(sprintId);
+        var command = new EndSprint(sprintId);
 
-            // Check if exception is thrown
+        // Check if exception is thrown
 
-            _commandHandler
-                .Awaiting(c => c.HandleAsync(command))
-                .Should().NotThrow();
-
-
-            var startedSprint = await _sprintMongoDbFixture.GetAsync(sprintId);
-
-            startedSprint.Should().NotBeNull();
-            startedSprint.StartedAt.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(10));
-            startedSprint.EndedAt.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(10));
-        }
-
-        [Fact]
-        public async void end_sprint_command_fails_when_sprint_does_not_exist()
-        {
-            var projectId = "projectKey" + Guid.NewGuid();
-
-            var project = new Project(projectId);
-            await _projectMongoDbFixture.InsertAsync(project.AsDocument());
-
-            var sprintId = "sprintKey" + Guid.NewGuid();
+        await _commandHandler
+            .Awaiting(c => c.HandleAsync(command))
+            .Should().NotThrowAsync();
 
 
-            var command = new EndSprint(sprintId);
+        var startedSprint = await _sprintMongoDbFixture.GetAsync(sprintId);
 
-            // Check if exception is thrown
+        startedSprint.Should().NotBeNull();
+        startedSprint.StartedAt.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(10));
+        startedSprint.EndedAt.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(10));
+    }
 
-            _commandHandler
-                .Awaiting(c => c.HandleAsync(command))
-                .Should().Throw<SprintNotFoundException>();
-        }
+    [Fact]
+    public async void end_sprint_command_fails_when_sprint_does_not_exist()
+    {
+        var projectId = "projectKey" + Guid.NewGuid();
 
-        [Fact]
-        public async Task end_sprint_command_fails_when_sprint_has_not_been_started()
-        {
-            var projectId = "projectKey" + Guid.NewGuid();
+        var project = new Project(projectId);
+        await _projectMongoDbFixture.InsertAsync(project.AsDocument());
 
-            var project = new Project(projectId);
-            await _projectMongoDbFixture.InsertAsync(project.AsDocument());
+        var sprintId = "sprintKey" + Guid.NewGuid();
 
-            var sprintId = "sprintKey" + Guid.NewGuid();
-            var title = "Title";
-            var description = "description";
-            var createdAt = DateTime.Now;
-            var startedAt = DateTime.MinValue;
-            var startDate = DateTime.MinValue;
-            var endDate = DateTime.MaxValue;
-            var endedAt = DateTime.MaxValue;
 
-            var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate, endedAt);
-            await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
+        var command = new EndSprint(sprintId);
 
-            var command = new EndSprint(sprintId);
+        // Check if exception is thrown
 
-            // Check if exception is thrown
+        await _commandHandler
+            .Awaiting(c => c.HandleAsync(command))
+            .Should().ThrowAsync<SprintNotFoundException>();
+    }
 
-            _commandHandler
-                .Awaiting(c => c.HandleAsync(command))
-                .Should().Throw<SprintNotStartedException>();
-        }
+    [Fact]
+    public async Task end_sprint_command_fails_when_sprint_has_not_been_started()
+    {
+        var projectId = "projectKey" + Guid.NewGuid();
+
+        var project = new Project(projectId);
+        await _projectMongoDbFixture.InsertAsync(project.AsDocument());
+
+        var sprintId = "sprintKey" + Guid.NewGuid();
+        var title = "Title";
+        var description = "description";
+        var createdAt = DateTime.Now;
+        var startedAt = DateTime.MinValue;
+        var startDate = DateTime.MinValue;
+        var endDate = DateTime.MaxValue;
+        var endedAt = DateTime.MaxValue;
+
+        var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate,
+            endedAt);
+        await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
+
+        var command = new EndSprint(sprintId);
+
+        // Check if exception is thrown
+
+        await _commandHandler
+            .Awaiting(c => c.HandleAsync(command))
+            .Should().ThrowAsync<SprintNotStartedException>();
     }
 }

@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
 
-namespace Spirebyte.Services.Sprints.Core.Entities
-{
-    public class Project
-    {
-        public string Id { get; private set; }
-        public ICollection<Issue> Issues { get; set; }
+namespace Spirebyte.Services.Sprints.Core.Entities;
 
-        public Project(string id)
-        {
-            Id = id;
-        }
+public class Project
+{
+    public Project(string id)
+    {
+        Id = id;
     }
+
+    public string Id { get; }
+    public ICollection<Issue> Issues { get; set; }
 }

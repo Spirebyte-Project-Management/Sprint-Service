@@ -3,9 +3,9 @@
 namespace Spirebyte.Services.Sprints.Application.Events;
 
 [Contract]
-public class StartedSprint : IEvent
+public class SprintUpdated : IEvent
 {
-    public StartedSprint(string sprintId)
+    public SprintUpdated(string sprintId)
     {
         SprintId = sprintId;
     }

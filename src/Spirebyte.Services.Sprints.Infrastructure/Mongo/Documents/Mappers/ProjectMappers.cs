@@ -1,16 +1,19 @@
 ﻿using Spirebyte.Services.Sprints.Core.Entities;
 
-namespace Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers
-{
-    internal static class ProjectMappers
-    {
-        public static Project AsEntity(this ProjectDocument document)
-            => new Project(document.Id);
+namespace Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers;
 
-        public static ProjectDocument AsDocument(this Project entity)
-            => new ProjectDocument
-            {
-                Id = entity.Id
-            };
+internal static class ProjectMappers
+{
+    public static Project AsEntity(this ProjectDocument document)
+    {
+        return new(document.Id);
+    }
+
+    public static ProjectDocument AsDocument(this Project entity)
+    {
+        return new()
+        {
+            Id = entity.Id
+        };
     }
 }

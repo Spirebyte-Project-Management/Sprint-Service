@@ -1,12 +1,11 @@
-﻿using Spirebyte.Services.Sprints.Core.Entities;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Spirebyte.Services.Sprints.Core.Entities;
 
-namespace Spirebyte.Services.Sprints.Core.Repositories
+namespace Spirebyte.Services.Sprints.Core.Repositories;
+
+public interface IProjectRepository
 {
-    public interface IProjectRepository
-    {
-        Task<Project> GetAsync(string id);
-        Task<bool> ExistsAsync(string id);
-        Task AddAsync(Project project);
-    }
+    Task<Project> GetAsync(string id);
+    Task<bool> ExistsAsync(string id);
+    Task AddAsync(Project project);
 }

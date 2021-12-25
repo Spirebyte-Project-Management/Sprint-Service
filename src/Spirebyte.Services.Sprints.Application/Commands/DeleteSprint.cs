@@ -3,9 +3,9 @@
 namespace Spirebyte.Services.Sprints.Application.Commands;
 
 [Contract]
-public class StartSprint : ICommand
+public class DeleteSprint : ICommand
 {
-    public StartSprint(string id)
+    public DeleteSprint(string id)
     {
         Id = id;
     }

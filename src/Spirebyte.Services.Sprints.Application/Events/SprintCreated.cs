@@ -1,15 +1,14 @@
 ﻿using Convey.CQRS.Events;
 
-namespace Spirebyte.Services.Sprints.Application.Events
-{
-    [Contract]
-    public class SprintCreated : IEvent
-    {
-        public string SprintId { get; }
+namespace Spirebyte.Services.Sprints.Application.Events;
 
-        public SprintCreated(string sprintId)
-        {
-            SprintId = sprintId;
-        }
+[Contract]
+public class SprintCreated : IEvent
+{
+    public SprintCreated(string sprintId)
+    {
+        SprintId = sprintId;
     }
+
+    public string SprintId { get; }
 }

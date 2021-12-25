@@ -1,26 +1,25 @@
-﻿namespace Spirebyte.Services.Sprints.Core.Entities
+﻿namespace Spirebyte.Services.Sprints.Core.Entities;
+
+public class Issue
 {
-    public class Issue
+    public Issue(string id, string projectId, string? sprintId)
     {
-        public string Id { get; private set; }
-        public string ProjectId { get; private set; }
-        public string? SprintId { get; private set; }
+        Id = id;
+        ProjectId = projectId;
+        SprintId = sprintId;
+    }
 
-        public Issue(string id, string projectId, string? sprintId)
-        {
-            Id = id;
-            ProjectId = projectId;
-            SprintId = sprintId;
-        }
+    public string Id { get; }
+    public string ProjectId { get; }
+    public string? SprintId { get; private set; }
 
-        public void AddToSprint(string sprintId)
-        {
-            SprintId = sprintId;
-        }
+    public void AddToSprint(string sprintId)
+    {
+        SprintId = sprintId;
+    }
 
-        public void RemoveFromSprint()
-        {
-            SprintId = null;
-        }
+    public void RemoveFromSprint()
+    {
+        SprintId = null;
     }
 }

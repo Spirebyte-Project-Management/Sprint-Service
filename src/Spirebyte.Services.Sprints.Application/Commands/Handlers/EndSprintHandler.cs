@@ -1,44 +1,36 @@
-﻿using Convey.CQRS.Commands;
+﻿using System;
+using System.Threading.Tasks;
+using Convey.CQRS.Commands;
 using Spirebyte.Services.Sprints.Application.Events;
 using Spirebyte.Services.Sprints.Application.Exceptions;
 using Spirebyte.Services.Sprints.Application.Services.Interfaces;
 using Spirebyte.Services.Sprints.Core.Repositories;
-using System;
-using System.Threading.Tasks;
 
-namespace Spirebyte.Services.Sprints.Application.Commands.Handlers
+namespace Spirebyte.Services.Sprints.Application.Commands.Handlers;
+
+internal sealed class EndSprintHandler : ICommandHandler<EndSprint>
 {
-    internal sealed class EndSprintHandler : ICommandHandler<EndSprint>
+    private readonly IMessageBroker _messageBroker;
+    private readonly ISprintRepository _sprintRepository;
+
+    public EndSprintHandler(ISprintRepository sprintRepository,
+        IMessageBroker messageBroker)
     {
-        private readonly ISprintRepository _sprintRepository;
-        private readonly IMessageBroker _messageBroker;
+        _sprintRepository = sprintRepository;
+        _messageBroker = messageBroker;
+    }
 
-        public EndSprintHandler(ISprintRepository sprintRepository,
-            IMessageBroker messageBroker)
-        {
-            _sprintRepository = sprintRepository;
-            _messageBroker = messageBroker;
-        }
+    public async Task HandleAsync(EndSprint command)
+    {
+        if (!await _sprintRepository.ExistsAsync(command.Id)) throw new SprintNotFoundException(command.Id);
 
-        public async Task HandleAsync(EndSprint command)
-        {
-            if (!(await _sprintRepository.ExistsAsync(command.Id)))
-            {
-                throw new SprintNotFoundException(command.Id);
-            }
+        var sprint = await _sprintRepository.GetAsync(command.Id);
 
-            var sprint = await _sprintRepository.GetAsync(command.Id);
+        if (sprint.StartedAt == DateTime.MinValue) throw new SprintNotStartedException(sprint.Id);
 
-            if (sprint.StartedAt == DateTime.MinValue)
-            {
-                throw new SprintNotStartedException(sprint.Id);
-            }
+        sprint.End();
+        await _sprintRepository.UpdateAsync(sprint);
 
-            sprint.End();
-            await _sprintRepository.UpdateAsync(sprint);
-
-            await _messageBroker.PublishAsync(new EndedSprint(sprint.Id));
-
-        }
+        await _messageBroker.PublishAsync(new EndedSprint(sprint.Id));
     }
 }

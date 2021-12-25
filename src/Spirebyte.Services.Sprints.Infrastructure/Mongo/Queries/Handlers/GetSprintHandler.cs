@@ -1,27 +1,26 @@
-﻿using Convey.CQRS.Queries;
+﻿using System.Threading.Tasks;
+using Convey.CQRS.Queries;
 using Convey.Persistence.MongoDB;
 using Spirebyte.Services.Sprints.Application.DTO;
 using Spirebyte.Services.Sprints.Application.Queries;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers;
-using System.Threading.Tasks;
 
-namespace Spirebyte.Services.Sprints.Infrastructure.Mongo.Queries.Handlers
+namespace Spirebyte.Services.Sprints.Infrastructure.Mongo.Queries.Handlers;
+
+internal sealed class GetSprintHandler : IQueryHandler<GetSprint, SprintDto>
 {
-    internal sealed class GetSprintHandler : IQueryHandler<GetSprint, SprintDto>
+    private readonly IMongoRepository<SprintDocument, string> _sprintRepository;
+
+    public GetSprintHandler(IMongoRepository<SprintDocument, string> sprintRepository)
     {
-        private readonly IMongoRepository<SprintDocument, string> _sprintRepository;
+        _sprintRepository = sprintRepository;
+    }
 
-        public GetSprintHandler(IMongoRepository<SprintDocument, string> sprintRepository)
-        {
-            _sprintRepository = sprintRepository;
-        }
+    public async Task<SprintDto> HandleAsync(GetSprint query)
+    {
+        var sprint = await _sprintRepository.GetAsync(query.SprintId);
 
-        public async Task<SprintDto> HandleAsync(GetSprint query)
-        {
-            var sprint = await _sprintRepository.GetAsync(query.SprintId);
-
-            return sprint?.AsDto();
-        }
+        return sprint?.AsDto();
     }
 }

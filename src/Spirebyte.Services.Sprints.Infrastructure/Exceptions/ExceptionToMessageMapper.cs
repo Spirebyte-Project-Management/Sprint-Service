@@ -1,19 +1,20 @@
-﻿using Convey.MessageBrokers.RabbitMQ;
+﻿using System;
+using Convey.MessageBrokers.RabbitMQ;
 using Spirebyte.Services.Sprints.Application.Events.Rejected;
 using Spirebyte.Services.Sprints.Application.Exceptions;
-using System;
 
-namespace Spirebyte.Services.Sprints.Infrastructure.Exceptions
+namespace Spirebyte.Services.Sprints.Infrastructure.Exceptions;
+
+internal sealed class ExceptionToMessageMapper : IExceptionToMessageMapper
 {
-    internal sealed class ExceptionToMessageMapper : IExceptionToMessageMapper
+    public object Map(Exception exception, object message)
     {
-        public object Map(Exception exception, object message)
-            => exception switch
+        return exception switch
 
-            {
-                ProjectNotFoundException ex => new SprintCreatedRejected(ex.ProjectId, ex.Message, ex.Code),
-                KeyAlreadyExistsException ex => new SprintCreatedRejected(ex.SprintId, ex.Message, ex.Code),
-                _ => null
-            };
+        {
+            ProjectNotFoundException ex => new SprintCreatedRejected(ex.ProjectId, ex.Message, ex.Code),
+            KeyAlreadyExistsException ex => new SprintCreatedRejected(ex.SprintId, ex.Message, ex.Code),
+            _ => null
+        };
     }
 }
