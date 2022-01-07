@@ -7,6 +7,7 @@ using Spirebyte.Services.Sprints.API;
 using Spirebyte.Services.Sprints.Application.Events.External;
 using Spirebyte.Services.Sprints.Application.Exceptions;
 using Spirebyte.Services.Sprints.Core.Entities;
+using Spirebyte.Services.Sprints.Core.Enums;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers;
 using Spirebyte.Services.Sprints.Tests.Shared.Factories;
@@ -49,7 +50,7 @@ public class IssueCreatedTests : IDisposable
         var project = new Project(projectId);
         await _projectMongoDbFixture.InsertAsync(project.AsDocument());
 
-        var externalEvent = new IssueCreated(issueId, projectId);
+        var externalEvent = new IssueCreated(issueId, projectId, 0);
 
         // Check if exception is thrown
 
@@ -75,10 +76,10 @@ public class IssueCreatedTests : IDisposable
         var project = new Project(projectId);
         await _projectMongoDbFixture.InsertAsync(project.AsDocument());
 
-        var issue = new Issue(issueId, projectId, null);
+        var issue = new Issue(issueId, projectId, null, 0, IssueStatus.TODO);
         await _issueMongoDbFixture.InsertAsync(issue.AsDocument());
 
-        var externalEvent = new IssueCreated(issueId, projectId);
+        var externalEvent = new IssueCreated(issueId, projectId, 0);
 
         // Check if exception is thrown
 
@@ -93,7 +94,7 @@ public class IssueCreatedTests : IDisposable
         var issueId = "issueKey" + Guid.NewGuid();
         var projectId = "projectKey" + Guid.NewGuid();
 
-        var externalEvent = new IssueCreated(issueId, projectId);
+        var externalEvent = new IssueCreated(issueId, projectId, 0);
 
         // Check if exception is thrown
 

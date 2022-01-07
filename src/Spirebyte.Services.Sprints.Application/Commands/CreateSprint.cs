@@ -16,7 +16,7 @@ public class CreateSprint : ICommand
         EndDate = endDate;
         CreatedAt = DateTime.Now;
     }
-    
+
     public string Title { get; set; }
     public string Description { get; set; }
     public string ProjectId { get; set; }

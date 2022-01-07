@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Convey.CQRS.Queries;
 using FluentAssertions;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Spirebyte.Services.Sprints.API;
 using Spirebyte.Services.Sprints.Application.Queries;
 using Spirebyte.Services.Sprints.Core.Entities;
+using Spirebyte.Services.Sprints.Core.Enums;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers;
 using Spirebyte.Services.Sprints.Tests.Shared.Factories;
@@ -61,15 +63,15 @@ public class GetIssuesWithoutSprintForProjectTests : IDisposable
         var endedAt = DateTime.MaxValue;
 
         var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate,
-            endedAt);
+            endedAt, new List<Change>(), 0, 0);
 
         await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
 
         var issueId = "issueKey" + Guid.NewGuid();
         var issueWithoutSprintId = "issueWithoutSprintKey";
 
-        var issue = new Issue(issueId, projectId, sprintId);
-        var issueWithoutSprint = new Issue(issueWithoutSprintId, projectId, null);
+        var issue = new Issue(issueId, projectId, sprintId, 0, IssueStatus.TODO);
+        var issueWithoutSprint = new Issue(issueWithoutSprintId, projectId, null, 0, IssueStatus.TODO);
         await _issueMongoDbFixture.InsertAsync(issue.AsDocument());
         await _issueMongoDbFixture.InsertAsync(issueWithoutSprint.AsDocument());
 
@@ -107,14 +109,14 @@ public class GetIssuesWithoutSprintForProjectTests : IDisposable
         var endedAt = DateTime.MaxValue;
 
         var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate,
-            endedAt);
+            endedAt, new List<Change>(), 0, 0);
         await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
 
         var issueId = "issueKey" + Guid.NewGuid();
         var issue2Id = "issue2Key" + Guid.NewGuid();
 
-        var issue = new Issue(issueId, projectId, sprintId);
-        var issue2 = new Issue(issue2Id, projectId, sprintId);
+        var issue = new Issue(issueId, projectId, sprintId, 0, IssueStatus.TODO);
+        var issue2 = new Issue(issue2Id, projectId, sprintId, 0, IssueStatus.TODO);
         await _issueMongoDbFixture.InsertAsync(issue.AsDocument());
         await _issueMongoDbFixture.InsertAsync(issue2.AsDocument());
 

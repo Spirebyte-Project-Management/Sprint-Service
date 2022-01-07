@@ -60,9 +60,9 @@ public class GetSprintsTests : IDisposable
         await _projectMongoDbFixture.InsertAsync(project.AsDocument());
 
         var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate,
-            endedAt);
+            endedAt, new List<Change>(), 0, 0);
         var sprint2 = new Sprint(sprint2Id, title, description, projectId, null, createdAt, startedAt, startDate,
-            endDate, endedAt);
+            endDate, endedAt, new List<Change>(), 0, 0);
 
         await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
         await _sprintMongoDbFixture.InsertAsync(sprint2.AsDocument());

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Convey.Types;
+using Spirebyte.Services.Sprints.Core.Entities;
 
 namespace Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
 
@@ -15,5 +16,9 @@ public sealed class SprintDocument : IIdentifiable<string>
     public DateTime EndDate { get; set; }
     public DateTime EndedAt { get; set; }
     public IEnumerable<string> IssueIds { get; set; }
+
+    public IEnumerable<Change> Changes { get; set; }
+    public int RemainingStoryPoints { get; set; }
+    public int TotalStoryPoints { get; set; }
     public string Id { get; set; }
 }

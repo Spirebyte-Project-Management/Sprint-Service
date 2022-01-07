@@ -44,7 +44,7 @@ public class AggregateId : IEquatable<AggregateId>
 
     public static implicit operator AggregateId(Guid id)
     {
-        return new(id);
+        return new AggregateId(id);
     }
 
     public override string ToString()

@@ -28,9 +28,10 @@ internal sealed class UpdateSprintHandler : ICommandHandler<UpdateSprint>
         if (sprint is null) throw new SprintNotFoundException(command.Id);
 
         var newSprint = new Sprint(sprint.Id, command.Title, command.Description, sprint.ProjectId, sprint.IssueIds,
-            sprint.CreatedAt, sprint.StartedAt, command.StartDate, command.EndDate, sprint.EndedAt);
+            sprint.CreatedAt, sprint.StartedAt, command.StartDate, command.EndDate, sprint.EndedAt, sprint.Changes,
+            sprint.RemainingStoryPoints, sprint.TotalStoryPoints);
         await _sprintRepository.UpdateAsync(newSprint);
 
-        await _messageBroker.PublishAsync(new SprintUpdated(sprint.Id));
+        await _messageBroker.PublishAsync(new SprintUpdated(sprint.Id, sprint.StartedAt, sprint.EndedAt));
     }
 }

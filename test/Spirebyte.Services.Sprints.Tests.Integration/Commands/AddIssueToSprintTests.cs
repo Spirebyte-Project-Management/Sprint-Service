@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Convey.CQRS.Commands;
 using FluentAssertions;
@@ -7,6 +8,7 @@ using Spirebyte.Services.Sprints.API;
 using Spirebyte.Services.Sprints.Application.Commands;
 using Spirebyte.Services.Sprints.Application.Exceptions;
 using Spirebyte.Services.Sprints.Core.Entities;
+using Spirebyte.Services.Sprints.Core.Enums;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers;
 using Spirebyte.Services.Sprints.Tests.Shared.Factories;
@@ -61,12 +63,12 @@ public class AddIssueToSprintTests : IDisposable
         var endedAt = DateTime.MaxValue;
 
         var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate,
-            endedAt);
+            endedAt, new List<Change>(), 0, 0);
         await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
 
         var issueId = "issueKey" + Guid.NewGuid();
 
-        var issue = new Issue(issueId, projectId, null);
+        var issue = new Issue(issueId, projectId, null, 0, IssueStatus.TODO);
         await _issueMongoDbFixture.InsertAsync(issue.AsDocument());
 
 
@@ -97,7 +99,7 @@ public class AddIssueToSprintTests : IDisposable
 
         var issueId = "issueKey" + Guid.NewGuid();
 
-        var issue = new Issue(issueId, projectId, null);
+        var issue = new Issue(issueId, projectId, null, 0, IssueStatus.TODO);
         await _issueMongoDbFixture.InsertAsync(issue.AsDocument());
 
 
@@ -129,7 +131,7 @@ public class AddIssueToSprintTests : IDisposable
         var endedAt = DateTime.MaxValue;
 
         var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate,
-            endedAt);
+            endedAt, new List<Change>(), 0, 0);
         await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
 
         var issueId = "issueKey" + Guid.NewGuid();

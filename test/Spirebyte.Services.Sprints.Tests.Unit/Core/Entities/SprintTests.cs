@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using Spirebyte.Services.Sprints.Core.Entities;
 using Spirebyte.Services.Sprints.Core.Exceptions;
@@ -22,7 +23,7 @@ public class SprintTests
         var endedAt = DateTime.MaxValue;
 
         var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate,
-            endedAt);
+            endedAt, new List<Change>(), 0, 0);
 
         sprint.Should().NotBeNull();
         sprint.Id.Should().Be(sprintId);
@@ -51,7 +52,7 @@ public class SprintTests
         var endedAt = DateTime.MaxValue;
 
         Action act = () => new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate,
-            endDate, endedAt);
+            endDate, endedAt, new List<Change>(), 0, 0);
         act.Should().Throw<InvalidIdException>();
     }
 
@@ -69,7 +70,7 @@ public class SprintTests
         var endedAt = DateTime.MaxValue;
 
         Action act = () => new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate,
-            endDate, endedAt);
+            endDate, endedAt, new List<Change>(), 0, 0);
         act.Should().Throw<InvalidProjectIdException>();
     }
 
@@ -87,7 +88,7 @@ public class SprintTests
         var endedAt = DateTime.MaxValue;
 
         Action act = () => new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate,
-            endDate, endedAt);
+            endDate, endedAt, new List<Change>(), 0, 0);
         act.Should().Throw<InvalidTitleException>();
     }
 }

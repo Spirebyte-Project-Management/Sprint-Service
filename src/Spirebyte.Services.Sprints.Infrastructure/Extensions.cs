@@ -92,7 +92,8 @@ public static class Extensions
             .UseRabbitMq()
             .SubscribeCommand<CreateSprint>()
             .SubscribeEvent<ProjectCreated>()
-            .SubscribeEvent<IssueCreated>();
+            .SubscribeEvent<IssueCreated>()
+            .SubscribeEvent<IssueUpdated>();
 
         return app;
     }

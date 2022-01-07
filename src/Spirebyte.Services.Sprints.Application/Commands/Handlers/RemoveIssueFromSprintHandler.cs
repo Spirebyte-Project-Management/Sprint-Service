@@ -28,12 +28,16 @@ internal sealed class RemoveIssueFromSprintHandler : ICommandHandler<RemoveIssue
         if (!await _sprintRepository.ExistsAsync(command.SprintId)) throw new SprintNotFoundException(command.SprintId);
 
         if (!await _issueRepository.ExistsAsync(command.IssueId)) throw new IssueNotFoundException(command.IssueId);
-
+        var sprint = await _sprintRepository.GetAsync(command.SprintId);
         var issue = await _issueRepository.GetAsync(command.IssueId);
-        issue.RemoveFromSprint();
 
+        issue.RemoveFromSprint();
         await _issueRepository.UpdateAsync(issue);
 
-        await _messageBroker.PublishAsync(new RemovedIssueFromSprint(command.SprintId, issue.Id));
+        sprint.RemoveIssue(issue);
+        await _sprintRepository.UpdateAsync(sprint);
+
+
+        await _messageBroker.PublishAsync(new RemovedIssueFromSprint(sprint.Id, issue.Id));
     }
 }

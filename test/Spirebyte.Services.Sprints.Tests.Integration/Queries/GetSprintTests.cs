@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Convey.CQRS.Queries;
 using FluentAssertions;
@@ -51,7 +52,7 @@ public class GetSprintTests : IDisposable
         var endedAt = DateTime.MaxValue;
 
         var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate,
-            endedAt);
+            endedAt, new List<Change>(), 0, 0);
 
         await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
 

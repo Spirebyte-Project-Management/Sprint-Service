@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Convey.CQRS.Commands;
 using Spirebyte.Services.Sprints.Application.Events;
@@ -32,9 +33,11 @@ internal sealed class CreateSprintHandler : ICommandHandler<CreateSprint>
         var sprintCount = await _sprintRepository.GetSprintCountOfProjectAsync(command.ProjectId);
         var sprintId = $"{command.ProjectId}-Sprint-{sprintCount + 1}";
 
-        var sprint = new Sprint(sprintId, command.Title, command.Description, command.ProjectId, new string[] { },
-            command.CreatedAt, DateTime.MinValue, command.StartDate, command.EndDate, DateTime.MinValue);
+        var sprint = new Sprint(sprintId, command.Title, command.Description, command.ProjectId, new List<string>(),
+            command.CreatedAt, DateTime.MinValue, command.StartDate, command.EndDate, DateTime.MinValue,
+            new List<Change>(), 0, 0);
+
         await _sprintRepository.AddAsync(sprint);
-        await _messageBroker.PublishAsync(new SprintCreated(sprint.Id));
+        await _messageBroker.PublishAsync(new SprintCreated(sprint.Id, sprint.ProjectId));
     }
 }

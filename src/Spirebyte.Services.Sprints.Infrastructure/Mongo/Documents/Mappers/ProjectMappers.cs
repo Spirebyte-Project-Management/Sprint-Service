@@ -6,12 +6,12 @@ internal static class ProjectMappers
 {
     public static Project AsEntity(this ProjectDocument document)
     {
-        return new(document.Id);
+        return new Project(document.Id);
     }
 
     public static ProjectDocument AsDocument(this Project entity)
     {
-        return new()
+        return new ProjectDocument
         {
             Id = entity.Id
         };
