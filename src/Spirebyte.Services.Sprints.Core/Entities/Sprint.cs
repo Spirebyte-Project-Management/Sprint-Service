@@ -81,11 +81,11 @@ public class Sprint
 
         if (StartedAt != DateTime.MinValue && EndedAt == DateTime.MinValue)
         {
-            var issueChange = new IssueChange(issue.Id, issue.StoryPoints, 0);
+            var issueChange = new IssueChange(issue.Id, issue.StoryPoints);
             RemainingStoryPoints += issue.StoryPoints;
             TotalStoryPoints += issue.StoryPoints;
 
-            var change = new Change(DateTime.Now, EventType.ScopeChange, $"Issue added to sprint",
+            var change = new Change(DateTime.Now, EventType.ScopeChange, "Issue added to sprint",
                 new List<IssueChange> { issueChange }, RemainingStoryPoints);
 
             Changes.Add(change);
@@ -102,7 +102,7 @@ public class Sprint
             RemainingStoryPoints -= issue.StoryPoints;
             TotalStoryPoints -= issue.StoryPoints;
 
-            var change = new Change(DateTime.Now, EventType.ScopeChange, $"Issue removed from sprint",
+            var change = new Change(DateTime.Now, EventType.ScopeChange, "Issue removed from sprint",
                 new List<IssueChange> { issueChange }, RemainingStoryPoints);
 
             Changes.Add(change);
@@ -123,7 +123,8 @@ public class Sprint
 
             var issueChange = new IssueChange(newIssue.Id, increase, decrease);
 
-            var change = new Change(DateTime.Now, EventType.ScopeChange, $"Estimate Changed from {oldIssue.StoryPoints} to {newIssue.StoryPoints}",
+            var change = new Change(DateTime.Now, EventType.ScopeChange,
+                $"Estimate Changed from {oldIssue.StoryPoints} to {newIssue.StoryPoints}",
                 new List<IssueChange> { issueChange }, RemainingStoryPoints);
 
             Changes.Add(change);

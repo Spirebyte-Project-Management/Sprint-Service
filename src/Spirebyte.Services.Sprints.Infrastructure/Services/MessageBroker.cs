@@ -23,15 +23,15 @@ internal sealed class MessageBroker : IMessageBroker
 {
     private const string DefaultSpanContextHeader = "span_context";
     private readonly IBusPublisher _busPublisher;
-    private readonly IMessageOutbox _outbox;
     private readonly ICorrelationContextAccessor _contextAccessor;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IMessagePropertiesAccessor _messagePropertiesAccessor;
     private readonly ICorrelationIdFactory _correlationIdFactory;
-    private readonly ITracer _tracer;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IJsonSerializer _jsonSerializer;
     private readonly ILogger<IMessageBroker> _logger;
+    private readonly IMessagePropertiesAccessor _messagePropertiesAccessor;
+    private readonly IMessageOutbox _outbox;
     private readonly string _spanContextHeader;
+    private readonly ITracer _tracer;
 
     public MessageBroker(IBusPublisher busPublisher, IMessageOutbox outbox,
         ICorrelationContextAccessor contextAccessor, IHttpContextAccessor httpContextAccessor,
@@ -52,37 +52,33 @@ internal sealed class MessageBroker : IMessageBroker
             : options.SpanContextHeader;
     }
 
-    public Task PublishAsync(params IEvent[] events) => PublishAsync(events?.AsEnumerable());
+    public Task PublishAsync(params IEvent[] events)
+    {
+        return PublishAsync(events?.AsEnumerable());
+    }
 
     private async Task PublishAsync(IEnumerable<IEvent> events)
     {
-        if (events is null)
-        {
-            return;
-        }
+        if (events is null) return;
 
         var messageProperties = _messagePropertiesAccessor.MessageProperties;
         var originatedMessageId = messageProperties?.MessageId;
         var correlationId = _correlationIdFactory.Create();
         var spanContext = GetSpanContext(messageProperties);
         if (string.IsNullOrWhiteSpace(spanContext))
-        {
             spanContext = _tracer.ActiveSpan is null ? string.Empty : _tracer.ActiveSpan.Context.ToString();
-        }
 
         var correlationContext = GetCorrelationContext();
         var headers = new Dictionary<string, object>();
 
         foreach (var @event in events)
         {
-            if (@event is null)
-            {
-                continue;
-            }
+            if (@event is null) continue;
 
             var messageName = @event.GetType().Name.Underscore();
             var messageId = Guid.NewGuid().ToString("N");
-            _logger.LogInformation("Publishing an integration event: {MessageName}  [ID: {MessageId}, Correlation ID: {CorrelationId}]...",
+            _logger.LogInformation(
+                "Publishing an integration event: {MessageName}  [ID: {MessageId}, Correlation ID: {CorrelationId}]...",
                 messageName, messageId, correlationId);
             if (_outbox.Enabled)
             {
@@ -114,15 +110,10 @@ internal sealed class MessageBroker : IMessageBroker
 
     private string GetSpanContext(IMessageProperties messageProperties)
     {
-        if (messageProperties is null)
-        {
-            return string.Empty;
-        }
+        if (messageProperties is null) return string.Empty;
 
         if (messageProperties.Headers.TryGetValue(_spanContextHeader, out var span) && span is byte[] spanBytes)
-        {
             return Encoding.UTF8.GetString(spanBytes);
-        }
 
         return string.Empty;
     }

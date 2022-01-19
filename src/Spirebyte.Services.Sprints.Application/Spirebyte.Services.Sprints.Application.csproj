@@ -1,21 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Convey" Version="0.6.524" />
-    <PackageReference Include="Convey.CQRS.Commands" Version="0.6.524" />
-    <PackageReference Include="Convey.CQRS.Events" Version="0.6.524" />
-    <PackageReference Include="Convey.CQRS.Queries" Version="0.6.524" />
-    <PackageReference Include="Convey.MessageBrokers" Version="0.6.524" />
-    <PackageReference Include="Convey.WebApi" Version="0.6.524" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Convey" Version="0.6.524"/>
+        <PackageReference Include="Convey.CQRS.Commands" Version="0.6.524"/>
+        <PackageReference Include="Convey.CQRS.Events" Version="0.6.524"/>
+        <PackageReference Include="Convey.CQRS.Queries" Version="0.6.524"/>
+        <PackageReference Include="Convey.MessageBrokers" Version="0.6.524"/>
+        <PackageReference Include="Convey.WebApi" Version="0.6.524"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Spirebyte.Services.Sprints.Core\Spirebyte.Services.Sprints.Core.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Spirebyte.Services.Sprints.Core\Spirebyte.Services.Sprints.Core.csproj"/>
+    </ItemGroup>
 
 </Project>

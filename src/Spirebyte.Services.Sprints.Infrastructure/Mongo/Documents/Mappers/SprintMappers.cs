@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Spirebyte.Services.Sprints.Application.DTO;
 using Spirebyte.Services.Sprints.Core.Entities;
 
@@ -9,9 +8,10 @@ internal static class SprintMappers
 {
     public static Sprint AsEntity(this SprintDocument document)
     {
-        return new(document.Id, document.Title, document.Description, document.ProjectId,
+        return new Sprint(document.Id, document.Title, document.Description, document.ProjectId,
             document.IssueIds.ToList(), document.CreatedAt,
-            document.StartedAt, document.StartDate, document.EndDate, document.EndedAt, document.Changes.ToList(), document.RemainingStoryPoints, document.TotalStoryPoints);
+            document.StartedAt, document.StartDate, document.EndDate, document.EndedAt, document.Changes.ToList(),
+            document.RemainingStoryPoints, document.TotalStoryPoints);
     }
 
     public static SprintDocument AsDocument(this Sprint entity)

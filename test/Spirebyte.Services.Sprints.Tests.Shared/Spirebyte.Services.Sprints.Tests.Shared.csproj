@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Convey.MessageBrokers.RabbitMQ" Version="0.6.524" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
-		<PackageReference Include="xunit.extensibility.core" Version="2.4.2-pre.12" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Convey.MessageBrokers.RabbitMQ" Version="0.6.524"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.1"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1"/>
+        <PackageReference Include="xunit.extensibility.core" Version="2.4.2-pre.12"/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\src\Spirebyte.Services.Sprints.API\Spirebyte.Services.Sprints.API.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Spirebyte.Services.Sprints.API\Spirebyte.Services.Sprints.API.csproj"/>
+    </ItemGroup>
 
 </Project>

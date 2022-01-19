@@ -12,8 +12,8 @@ namespace Spirebyte.Services.Sprints.Application.Commands.Handlers;
 internal sealed class AddIssueToSprintHandler : ICommandHandler<AddIssueToSprint>
 {
     private readonly IIssueRepository _issueRepository;
-    private readonly IMessageBroker _messageBroker;
     private readonly ILogger<AddIssueToSprintHandler> _logger;
+    private readonly IMessageBroker _messageBroker;
     private readonly ISprintRepository _sprintRepository;
 
     public AddIssueToSprintHandler(ISprintRepository sprintRepository,

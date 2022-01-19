@@ -3,7 +3,7 @@ using Convey.MessageBrokers;
 
 namespace Spirebyte.Services.Sprints.Application.Events.External;
 
-[Message("issues")] 
+[Message("issues")]
 public class IssueCreated : IEvent
 {
     public IssueCreated(string issueId, string projectId, int storyPoints)
