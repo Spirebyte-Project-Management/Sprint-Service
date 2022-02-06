@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Convey.CQRS.Queries;
 using Convey.Persistence.MongoDB;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using Spirebyte.Services.Sprints.Application.DTO;
-using Spirebyte.Services.Sprints.Application.Exceptions;
-using Spirebyte.Services.Sprints.Application.Queries;
+using Spirebyte.Services.Sprints.Application.Projects.Exceptions;
+using Spirebyte.Services.Sprints.Application.Sprints.DTO;
+using Spirebyte.Services.Sprints.Application.Sprints.Queries;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers;
 
@@ -25,7 +26,8 @@ internal sealed class GetSprintsHandler : IQueryHandler<GetSprints, IEnumerable<
         _projectRepository = projectRepository;
     }
 
-    public async Task<IEnumerable<SprintDto>> HandleAsync(GetSprints query)
+    public async Task<IEnumerable<SprintDto>> HandleAsync(GetSprints query,
+        CancellationToken cancellationToken = default)
     {
         var documents = _sprintRepository.Collection.AsQueryable();
 

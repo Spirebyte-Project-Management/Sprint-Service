@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Convey.CQRS.Queries;
 using Convey.Persistence.MongoDB;
-using Spirebyte.Services.Sprints.Application.DTO;
-using Spirebyte.Services.Sprints.Application.Queries;
+using Spirebyte.Services.Sprints.Application.Sprints.DTO;
+using Spirebyte.Services.Sprints.Application.Sprints.Queries;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers;
 
@@ -17,7 +18,7 @@ internal sealed class GetSprintHandler : IQueryHandler<GetSprint, SprintDto>
         _sprintRepository = sprintRepository;
     }
 
-    public async Task<SprintDto> HandleAsync(GetSprint query)
+    public async Task<SprintDto> HandleAsync(GetSprint query, CancellationToken cancellationToken = default)
     {
         var sprint = await _sprintRepository.GetAsync(query.SprintId);
 

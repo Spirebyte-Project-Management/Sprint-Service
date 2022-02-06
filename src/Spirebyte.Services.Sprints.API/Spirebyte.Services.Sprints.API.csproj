@@ -9,10 +9,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Convey" Version="0.6.524"/>
-        <PackageReference Include="Convey.Logging" Version="0.6.524"/>
-        <PackageReference Include="Convey.WebApi" Version="0.6.524"/>
-        <PackageReference Include="Convey.WebApi.CQRS" Version="0.6.524"/>
+        <PackageReference Include="Convey" Version="1.0.531"/>
+        <PackageReference Include="Convey.Logging" Version="1.0.531"/>
+        <PackageReference Include="Convey.WebApi" Version="1.0.531"/>
+        <PackageReference Include="Convey.WebApi.CQRS" Version="1.0.531"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,8 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference
-                Include="..\Spirebyte.Services.Sprints.Infrastructure\Spirebyte.Services.Sprints.Infrastructure.csproj"/>
+        <ProjectReference Include="..\Spirebyte.Services.Sprints.Infrastructure\Spirebyte.Services.Sprints.Infrastructure.csproj"/>
     </ItemGroup>
 
 </Project>

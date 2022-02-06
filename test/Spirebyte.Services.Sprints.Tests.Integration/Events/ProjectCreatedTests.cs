@@ -4,8 +4,8 @@ using Convey.CQRS.Events;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Spirebyte.Services.Sprints.API;
-using Spirebyte.Services.Sprints.Application.Events.External;
-using Spirebyte.Services.Sprints.Application.Exceptions;
+using Spirebyte.Services.Sprints.Application.Projects.Events.External;
+using Spirebyte.Services.Sprints.Application.Projects.Exceptions;
 using Spirebyte.Services.Sprints.Core.Entities;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers;
@@ -42,7 +42,7 @@ public class ProjectCreatedTests : IDisposable
     {
         var projectId = "projectKey" + Guid.NewGuid();
 
-        var externalEvent = new ProjectCreated(projectId);
+        var externalEvent = new ProjectCreated { ProjectId = projectId };
 
         // Check if exception is thrown
 
@@ -65,7 +65,7 @@ public class ProjectCreatedTests : IDisposable
         var project = new Project(projectId);
         await _projectMongoDbFixture.InsertAsync(project.AsDocument());
 
-        var externalEvent = new ProjectCreated(projectId);
+        var externalEvent = new ProjectCreated { ProjectId = projectId };
 
         // Check if exception is thrown
 

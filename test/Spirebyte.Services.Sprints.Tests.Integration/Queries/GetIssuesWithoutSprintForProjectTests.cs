@@ -5,7 +5,7 @@ using Convey.CQRS.Queries;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Spirebyte.Services.Sprints.API;
-using Spirebyte.Services.Sprints.Application.Queries;
+using Spirebyte.Services.Sprints.Application.Issues.Queries;
 using Spirebyte.Services.Sprints.Core.Entities;
 using Spirebyte.Services.Sprints.Core.Enums;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
