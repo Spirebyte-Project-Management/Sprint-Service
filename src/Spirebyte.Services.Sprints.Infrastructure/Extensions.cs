@@ -33,12 +33,12 @@ using Spirebyte.Services.Sprints.Application.Services.Interfaces;
 using Spirebyte.Services.Sprints.Application.Sprints.Commands;
 using Spirebyte.Services.Sprints.Core.Repositories;
 using Spirebyte.Services.Sprints.Infrastructure.Clients.HTTP;
-using Spirebyte.Services.Sprints.Infrastructure.Contexts;
 using Spirebyte.Services.Sprints.Infrastructure.Decorators;
 using Spirebyte.Services.Sprints.Infrastructure.Exceptions;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Repositories;
 using Spirebyte.Services.Sprints.Infrastructure.Services;
+using Spirebyte.Shared.Contexts;
 
 namespace Spirebyte.Services.Sprints.Infrastructure;
 
@@ -50,12 +50,12 @@ public static class Extensions
         builder.Services.AddSingleton<ISprintRepository, SprintRepository>();
         builder.Services.AddSingleton<IProjectRepository, ProjectRepository>();
         builder.Services.AddSingleton<IIssueRepository, IssueRepository>();
-        builder.Services.AddTransient<IAppContextFactory, AppContextFactory>();
         builder.Services.AddTransient<IIdentityApiHttpClient, IdentityApiHttpClient>();
-        builder.Services.AddTransient(ctx => ctx.GetRequiredService<IAppContextFactory>().Create());
         builder.Services.TryDecorate(typeof(ICommandHandler<>), typeof(OutboxCommandHandlerDecorator<>));
         builder.Services.TryDecorate(typeof(IEventHandler<>), typeof(OutboxEventHandlerDecorator<>));
 
+        builder.Services.AddSharedContexts();
+        
         return builder
             .AddErrorHandler<ExceptionToResponseMapper>()
             .AddQueryHandlers()
