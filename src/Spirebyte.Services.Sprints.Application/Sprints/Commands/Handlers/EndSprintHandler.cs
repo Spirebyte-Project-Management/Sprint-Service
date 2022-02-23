@@ -32,6 +32,6 @@ internal sealed class EndSprintHandler : ICommandHandler<EndSprint>
         sprint.End();
         await _sprintRepository.UpdateAsync(sprint);
 
-        await _messageBroker.PublishAsync(new EndedSprint(sprint.Id));
+        await _messageBroker.PublishAsync(new EndedSprint(sprint.Id, sprint.ProjectId));
     }
 }

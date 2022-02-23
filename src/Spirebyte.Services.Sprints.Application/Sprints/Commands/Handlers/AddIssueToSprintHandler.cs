@@ -44,6 +44,6 @@ internal sealed class AddIssueToSprintHandler : ICommandHandler<AddIssueToSprint
         sprint.AddIssue(issue);
         await _sprintRepository.UpdateAsync(sprint);
 
-        await _messageBroker.PublishAsync(new AddedIssueToSprint(sprint.Id, issue.Id));
+        await _messageBroker.PublishAsync(new AddedIssueToSprint(sprint.Id, sprint.ProjectId, issue.Id));
     }
 }

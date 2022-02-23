@@ -33,6 +33,6 @@ internal sealed class UpdateSprintHandler : ICommandHandler<UpdateSprint>
             sprint.RemainingStoryPoints, sprint.TotalStoryPoints);
         await _sprintRepository.UpdateAsync(newSprint);
 
-        await _messageBroker.PublishAsync(new SprintUpdated(sprint.Id, sprint.StartedAt, sprint.EndedAt));
+        await _messageBroker.PublishAsync(new SprintUpdated(newSprint, sprint));
     }
 }

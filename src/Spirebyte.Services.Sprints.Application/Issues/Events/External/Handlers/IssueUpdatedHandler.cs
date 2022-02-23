@@ -22,9 +22,9 @@ internal sealed class IssueUpdatedHandler : IEventHandler<IssueUpdated>
 
     public async Task HandleAsync(IssueUpdated @event, CancellationToken cancellationToken = default)
     {
-        if (!await _issueRepository.ExistsAsync(@event.IssueId)) throw new IssueNotFoundException(@event.IssueId);
+        if (!await _issueRepository.ExistsAsync(@event.Id)) throw new IssueNotFoundException(@event.Id);
 
-        var issue = await _issueRepository.GetAsync(@event.IssueId);
+        var issue = await _issueRepository.GetAsync(@event.Id);
         var updatedIssue = new Issue(issue.Id, issue.ProjectId, issue.SprintId, @event.StoryPoints, @event.Status);
 
         if (issue.SprintId is not null)

@@ -28,6 +28,6 @@ internal sealed class StartSprintHandler : ICommandHandler<StartSprint>
         sprint.Start();
         await _sprintRepository.UpdateAsync(sprint);
 
-        await _messageBroker.PublishAsync(new StartedSprint(sprint.Id));
+        await _messageBroker.PublishAsync(new StartedSprint(sprint.Id, sprint.ProjectId));
     }
 }

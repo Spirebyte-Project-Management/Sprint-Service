@@ -25,9 +25,9 @@ internal sealed class IssueCreatedHandler : IEventHandler<IssueCreated>
         if (!await _projectRepository.ExistsAsync(@event.ProjectId))
             throw new ProjectNotFoundException(@event.ProjectId);
 
-        if (await _issueRepository.ExistsAsync(@event.IssueId)) throw new IssueAlreadyCreatedException(@event.IssueId);
+        if (await _issueRepository.ExistsAsync(@event.Id)) throw new IssueAlreadyCreatedException(@event.Id);
 
-        var issue = new Issue(@event.IssueId, @event.ProjectId, null, @event.StoryPoints, IssueStatus.TODO);
+        var issue = new Issue(@event.Id, @event.ProjectId, null, @event.StoryPoints, IssueStatus.TODO);
         await _issueRepository.AddAsync(issue);
     }
 }

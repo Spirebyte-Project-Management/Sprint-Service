@@ -3,4 +3,4 @@
 namespace Spirebyte.Services.Sprints.Application.Sprints.Events;
 
 [Contract]
-internal record StartedSprint(string SprintId) : IEvent;
+internal record StartedSprint(string SprintId, string ProjectId) : IEvent;

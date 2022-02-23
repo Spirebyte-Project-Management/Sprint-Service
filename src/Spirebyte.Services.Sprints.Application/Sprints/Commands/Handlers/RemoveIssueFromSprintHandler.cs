@@ -40,6 +40,6 @@ internal sealed class RemoveIssueFromSprintHandler : ICommandHandler<RemoveIssue
         await _sprintRepository.UpdateAsync(sprint);
 
 
-        await _messageBroker.PublishAsync(new RemovedIssueFromSprint(sprint.Id, issue.Id));
+        await _messageBroker.PublishAsync(new RemovedIssueFromSprint(sprint.Id, sprint.ProjectId, issue.Id));
     }
 }

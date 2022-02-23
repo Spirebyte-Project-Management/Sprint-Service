@@ -22,7 +22,6 @@ internal class SprintCreated : IEvent
         StartDate = startDate;
         EndDate = endDate;
         EndedAt = endedAt;
-        Changes = changes;
         RemainingStoryPoints = remainingStoryPoints;
         TotalStoryPoints = totalStoryPoints;
     }
@@ -38,7 +37,6 @@ internal class SprintCreated : IEvent
         StartDate = sprint.StartDate;
         EndDate = sprint.EndDate;
         EndedAt = sprint.EndedAt;
-        Changes = sprint.Changes;
         RemainingStoryPoints = sprint.RemainingStoryPoints;
         TotalStoryPoints = sprint.TotalStoryPoints;
     }
@@ -53,7 +51,6 @@ internal class SprintCreated : IEvent
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public DateTime EndedAt { get; set; }
-    public IEnumerable<Change> Changes { get; set; }
     public int RemainingStoryPoints { get; set; }
     public int TotalStoryPoints { get; set; }
 }
