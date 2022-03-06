@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Convey.CQRS.Events;
 using Spirebyte.Services.Sprints.Core.Entities;
 using Spirebyte.Shared.Changes;
-using Change = Spirebyte.Services.Activities.Core.ValueObjects.Change;
+using Change = Spirebyte.Shared.Changes.ValueObjects.Change;
 
 namespace Spirebyte.Services.Sprints.Application.Sprints.Events;
 
