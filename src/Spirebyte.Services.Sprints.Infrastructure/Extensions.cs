@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Convey;
-using Convey.Auth;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Events;
 using Convey.CQRS.Queries;
-using Convey.Discovery.Consul;
 using Convey.Docs.Swagger;
 using Convey.HTTP;
 using Convey.LoadBalancing.Fabio;
@@ -58,7 +56,7 @@ public static class Extensions
         builder.Services.TryDecorate(typeof(IEventHandler<>), typeof(OutboxEventHandlerDecorator<>));
 
         builder.Services.AddSharedContexts();
-        
+
         return builder
             .AddErrorHandler<ExceptionToResponseMapper>()
             .AddQueryHandlers()

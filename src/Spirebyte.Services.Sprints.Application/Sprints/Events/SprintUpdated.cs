@@ -11,7 +11,8 @@ namespace Spirebyte.Services.Sprints.Application.Sprints.Events;
 internal class SprintUpdated : IEvent
 {
     public SprintUpdated(string id, string title, string description, IEnumerable<string> issueIds, string projectId,
-        DateTime createdAt, DateTime startedAt, DateTime startDate, DateTime endDate, DateTime endedAt, int remainingStoryPoints, int totalStoryPoints)
+        DateTime createdAt, DateTime startedAt, DateTime startDate, DateTime endDate, DateTime endedAt,
+        int remainingStoryPoints, int totalStoryPoints)
     {
         Id = id;
         Title = title;
@@ -56,6 +57,6 @@ internal class SprintUpdated : IEvent
     public DateTime EndedAt { get; set; }
     public int RemainingStoryPoints { get; set; }
     public int TotalStoryPoints { get; set; }
-    
+
     public Change[] Changes { get; set; }
 }

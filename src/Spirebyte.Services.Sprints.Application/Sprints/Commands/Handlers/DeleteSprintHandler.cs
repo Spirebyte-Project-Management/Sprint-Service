@@ -25,7 +25,7 @@ internal sealed class DeleteSprintHandler : ICommandHandler<DeleteSprint>
         if (!await _sprintRepository.ExistsAsync(command.Id)) throw new SprintNotFoundException(command.Id);
 
         var sprint = await _sprintRepository.GetAsync(command.Id);
-        
+
         await _sprintRepository.DeleteAsync(sprint.Id);
 
         await _messageBroker.PublishAsync(new SprintDeleted(sprint));
