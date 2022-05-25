@@ -5,24 +5,24 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Convey" Version="1.0.531"/>
-        <PackageReference Include="Convey.CQRS.Commands" Version="1.0.531"/>
-        <PackageReference Include="Convey.CQRS.Events" Version="1.0.531"/>
-        <PackageReference Include="Convey.CQRS.Queries" Version="1.0.531"/>
-        <PackageReference Include="Convey.MessageBrokers" Version="1.0.531"/>
-        <PackageReference Include="Convey.WebApi" Version="1.0.531"/>
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0"/>
-        <PackageReference Include="Spirebyte.Shared" Version="1.0.12"/>
+        <PackageReference Include="Convey" Version="1.0.531" />
+        <PackageReference Include="Convey.CQRS.Commands" Version="1.0.531" />
+        <PackageReference Include="Convey.CQRS.Events" Version="1.0.531" />
+        <PackageReference Include="Convey.CQRS.Queries" Version="1.0.531" />
+        <PackageReference Include="Convey.MessageBrokers" Version="1.0.531" />
+        <PackageReference Include="Convey.WebApi" Version="1.0.531" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+        <PackageReference Include="Spirebyte.Shared" Version="1.0.14" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\Shared\src\Spirebyte.Shared\Spirebyte.Shared.csproj"/>
-        <ProjectReference Include="..\Spirebyte.Services.Sprints.Core\Spirebyte.Services.Sprints.Core.csproj"/>
+        <ProjectReference Include="..\..\..\Shared\src\Spirebyte.Shared\Spirebyte.Shared.csproj" />
+        <ProjectReference Include="..\Spirebyte.Services.Sprints.Core\Spirebyte.Services.Sprints.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Exceptions"/>
-        <Folder Include="Issues\Events"/>
+        <Folder Include="Exceptions" />
+        <Folder Include="Issues\Events" />
     </ItemGroup>
 
 </Project>

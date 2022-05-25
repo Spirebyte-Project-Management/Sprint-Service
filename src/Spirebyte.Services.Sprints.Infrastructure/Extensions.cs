@@ -57,7 +57,7 @@ public static class Extensions
 
         builder.Services.AddSharedContexts();
 
-        return builder
+        builder
             .AddErrorHandler<ExceptionToResponseMapper>()
             .AddQueryHandlers()
             .AddInMemoryQueryDispatcher()
@@ -78,6 +78,9 @@ public static class Extensions
             .AddMongoRepository<SprintDocument, string>("sprints")
             .AddWebApiSwaggerDocs()
             .AddSecurity();
+        
+        builder.Services.AddCorrelationContextFactories();
+        return builder;
     }
 
     public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app)
