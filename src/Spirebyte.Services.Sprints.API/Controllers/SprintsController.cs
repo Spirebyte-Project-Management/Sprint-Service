@@ -8,6 +8,7 @@ using Spirebyte.Services.Sprints.Application.Sprints.Commands;
 using Spirebyte.Services.Sprints.Application.Sprints.DTO;
 using Spirebyte.Services.Sprints.Application.Sprints.Queries;
 using Spirebyte.Services.Sprints.Application.Sprints.Services.Interfaces;
+using Spirebyte.Services.Sprints.Core.Constants;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Spirebyte.Services.Sprints.API.Controllers;
@@ -25,6 +26,7 @@ public class SprintsController : BaseController
     }
 
     [HttpGet]
+    [Authorize(ApiScopes.Read)]
     [SwaggerOperation("Browse sprints")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -35,6 +37,7 @@ public class SprintsController : BaseController
     }
 
     [HttpGet("{sprintId}")]
+    [Authorize(ApiScopes.Read)]
     [SwaggerOperation("Get Sprint")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -46,6 +49,7 @@ public class SprintsController : BaseController
     }
 
     [HttpPost]
+    [Authorize(ApiScopes.Write)]
     [SwaggerOperation("Create Sprint")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -58,6 +62,7 @@ public class SprintsController : BaseController
 
 
     [HttpPut("{sprintId}")]
+    [Authorize(ApiScopes.Write)]
     [SwaggerOperation("Update sprint")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -70,6 +75,7 @@ public class SprintsController : BaseController
     }
 
     [HttpDelete("{sprintId}")]
+    [Authorize(ApiScopes.Delete)]
     [SwaggerOperation("Delete sprint")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -80,6 +86,7 @@ public class SprintsController : BaseController
     }
 
     [HttpPost("{sprintId}/start")]
+    [Authorize(ApiScopes.Start)]
     [SwaggerOperation("Start Sprint")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -90,6 +97,7 @@ public class SprintsController : BaseController
     }
 
     [HttpPost("{sprintId}/end")]
+    [Authorize(ApiScopes.Stop)]
     [SwaggerOperation("End Sprint")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -100,6 +108,7 @@ public class SprintsController : BaseController
     }
 
     [HttpPost("{sprintId}/addIssue/{issueId}")]
+    [Authorize(ApiScopes.Write)]
     [SwaggerOperation("Add issue to Sprint")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -110,6 +119,7 @@ public class SprintsController : BaseController
     }
 
     [HttpPost("{sprintId}/removeIssue/{issueId}")]
+    [Authorize(ApiScopes.Write)]
     [SwaggerOperation("Remove issue from sprint")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

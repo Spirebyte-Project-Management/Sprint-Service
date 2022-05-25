@@ -11,7 +11,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Spirebyte.Services.Sprints.Application;
+using Spirebyte.Services.Sprints.Core.Constants;
 using Spirebyte.Services.Sprints.Infrastructure;
+using Spirebyte.Shared.IdentityServer;
 
 namespace Spirebyte.Services.Sprints.API;
 
@@ -30,6 +32,14 @@ public class Program
             .ConfigureServices(services =>
             {
                 services.AddControllers().AddMetrics();
+                services.AddAuthorization(options =>
+                {
+                    options.AddEitherOrScopePolicy(ApiScopes.Read, "sprints.read", "sprints.manage");
+                    options.AddEitherOrScopePolicy(ApiScopes.Write, "sprints.write", "sprints.manage");
+                    options.AddEitherOrScopePolicy(ApiScopes.Delete, "sprints.delete", "sprints.manage");
+                    options.AddEitherOrScopePolicy(ApiScopes.Start, "sprints.start", "sprints.manage");
+                    options.AddEitherOrScopePolicy(ApiScopes.Stop, "sprints.stop", "sprints.manage");
+                });
                 services
                     .AddConvey()
                     .AddWebApi()
