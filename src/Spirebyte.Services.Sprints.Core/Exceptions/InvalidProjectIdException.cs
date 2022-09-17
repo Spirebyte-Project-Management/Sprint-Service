@@ -1,4 +1,4 @@
-﻿using Spirebyte.Services.Sprints.Core.Exceptions.Base;
+﻿using Spirebyte.Framework.Shared.Exceptions;
 
 namespace Spirebyte.Services.Sprints.Core.Exceptions;
 
@@ -10,5 +10,5 @@ public class InvalidProjectIdException : DomainException
     }
 
     public string ProjectId { get; }
-    public override string Code { get; } = "invalid_project_id";
+    public string Code { get; } = "invalid_project_id";
 }

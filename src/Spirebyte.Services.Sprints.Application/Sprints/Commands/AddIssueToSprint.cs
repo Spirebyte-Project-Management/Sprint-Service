@@ -1,8 +1,9 @@
-﻿using Convey.CQRS.Commands;
+﻿using Spirebyte.Framework.Shared.Abstractions;
+using Spirebyte.Framework.Shared.Attributes;
 
 namespace Spirebyte.Services.Sprints.Application.Sprints.Commands;
 
-[Contract]
+[Message("sprints", "add_issue_to_sprint", "sprints.add_issue_to_sprint")]
 public class AddIssueToSprint : ICommand
 {
     public AddIssueToSprint(string sprintId, string issueId)

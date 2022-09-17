@@ -1,4 +1,4 @@
-﻿using Spirebyte.Services.Sprints.Core.Exceptions.Base;
+﻿using Spirebyte.Framework.Shared.Exceptions;
 
 namespace Spirebyte.Services.Sprints.Core.Exceptions;
 
@@ -8,5 +8,5 @@ public class InvalidTitleException : DomainException
     {
     }
 
-    public override string Code { get; } = "invalid_title";
+    public string Code { get; } = "invalid_title";
 }

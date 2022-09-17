@@ -1,15 +1,14 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Convey.CQRS.Commands;
+using Spirebyte.Framework.Messaging.Brokers;
+using Spirebyte.Framework.Shared.Handlers;
 using Spirebyte.Services.Sprints.Application.Issues.Exceptions;
-using Spirebyte.Services.Sprints.Application.Services.Interfaces;
 using Spirebyte.Services.Sprints.Application.Sprints.Events;
 using Spirebyte.Services.Sprints.Application.Sprints.Exceptions;
 using Spirebyte.Services.Sprints.Core.Repositories;
 
 namespace Spirebyte.Services.Sprints.Application.Sprints.Commands.Handlers;
 
-// Simple wrapper
 internal sealed class RemoveIssueFromSprintHandler : ICommandHandler<RemoveIssueFromSprint>
 {
     private readonly IIssueRepository _issueRepository;
@@ -40,6 +39,6 @@ internal sealed class RemoveIssueFromSprintHandler : ICommandHandler<RemoveIssue
         await _sprintRepository.UpdateAsync(sprint);
 
 
-        await _messageBroker.PublishAsync(new RemovedIssueFromSprint(sprint.Id, sprint.ProjectId, issue.Id));
+        await _messageBroker.SendAsync(new RemovedIssueFromSprint(sprint.Id, sprint.ProjectId, issue.Id), cancellationToken);
     }
 }

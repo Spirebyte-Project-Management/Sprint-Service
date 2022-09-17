@@ -1,4 +1,4 @@
-﻿using Spirebyte.Services.Sprints.Application.Exceptions.Base;
+﻿using Spirebyte.Framework.Shared.Exceptions;
 
 namespace Spirebyte.Services.Sprints.Application.Projects.Exceptions;
 
@@ -9,6 +9,6 @@ public class ProjectNotFoundException : AppException
         ProjectId = projectId;
     }
 
-    public override string Code { get; } = "project_not_found";
+    public string Code { get; } = "project_not_found";
     public string ProjectId { get; }
 }

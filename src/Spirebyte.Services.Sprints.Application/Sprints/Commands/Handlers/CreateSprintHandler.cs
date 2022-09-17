@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Convey.CQRS.Commands;
+using Spirebyte.Framework.Messaging.Brokers;
+using Spirebyte.Framework.Shared.Handlers;
 using Spirebyte.Services.Sprints.Application.Projects.Exceptions;
-using Spirebyte.Services.Sprints.Application.Services.Interfaces;
 using Spirebyte.Services.Sprints.Application.Sprints.Events;
 using Spirebyte.Services.Sprints.Application.Sprints.Services.Interfaces;
 using Spirebyte.Services.Sprints.Core.Entities;
@@ -12,7 +12,6 @@ using Spirebyte.Services.Sprints.Core.Repositories;
 
 namespace Spirebyte.Services.Sprints.Application.Sprints.Commands.Handlers;
 
-// Simple wrapper
 internal sealed class CreateSprintHandler : ICommandHandler<CreateSprint>
 {
     private readonly IMessageBroker _messageBroker;
@@ -42,7 +41,7 @@ internal sealed class CreateSprintHandler : ICommandHandler<CreateSprint>
             new List<Change>(), 0, 0);
 
         await _sprintRepository.AddAsync(sprint);
-        await _messageBroker.PublishAsync(new SprintCreated(sprint));
+        await _messageBroker.SendAsync(new SprintCreated(sprint), cancellationToken);
 
         _sprintRequestStorage.SetSprint(command.ReferenceId, sprint);
     }

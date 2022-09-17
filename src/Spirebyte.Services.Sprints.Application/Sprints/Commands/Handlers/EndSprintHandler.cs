@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Convey.CQRS.Commands;
-using Spirebyte.Services.Sprints.Application.Services.Interfaces;
+using Spirebyte.Framework.Messaging.Brokers;
+using Spirebyte.Framework.Shared.Handlers;
 using Spirebyte.Services.Sprints.Application.Sprints.Events;
 using Spirebyte.Services.Sprints.Application.Sprints.Exceptions;
 using Spirebyte.Services.Sprints.Core.Repositories;
@@ -32,6 +32,6 @@ internal sealed class EndSprintHandler : ICommandHandler<EndSprint>
         sprint.End();
         await _sprintRepository.UpdateAsync(sprint);
 
-        await _messageBroker.PublishAsync(new EndedSprint(sprint.Id, sprint.ProjectId));
+        await _messageBroker.SendAsync(new EndedSprint(sprint.Id, sprint.ProjectId), cancellationToken);
     }
 }

@@ -1,6 +1,7 @@
-﻿using Convey.CQRS.Events;
+﻿using Spirebyte.Framework.Shared.Abstractions;
+using Spirebyte.Framework.Shared.Attributes;
 
 namespace Spirebyte.Services.Sprints.Application.Sprints.Events;
 
-[Contract]
+[Message("sprints", "ended_sprint")]
 internal record EndedSprint(string SprintId, string ProjectId) : IEvent;

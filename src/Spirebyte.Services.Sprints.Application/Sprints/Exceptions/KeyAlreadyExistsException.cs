@@ -1,4 +1,4 @@
-﻿using Spirebyte.Services.Sprints.Application.Exceptions.Base;
+﻿using Spirebyte.Framework.Shared.Exceptions;
 
 namespace Spirebyte.Services.Sprints.Application.Sprints.Exceptions;
 
@@ -10,6 +10,6 @@ public class KeyAlreadyExistsException : AppException
         SprintId = sprintId;
     }
 
-    public override string Code { get; } = "key_already_exists";
+    public string Code { get; } = "key_already_exists";
     public string SprintId { get; }
 }

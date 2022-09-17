@@ -1,8 +1,9 @@
-﻿using Convey.CQRS.Commands;
+﻿using Spirebyte.Framework.Shared.Abstractions;
+using Spirebyte.Framework.Shared.Attributes;
 
 namespace Spirebyte.Services.Sprints.Application.Sprints.Commands;
 
-[Contract]
+[Message("sprints", "start_sprint", "sprints.start_sprint")]
 public class StartSprint : ICommand
 {
     public StartSprint(string id)

@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Convey.CQRS.Commands;
-using Spirebyte.Services.Sprints.Application.Services.Interfaces;
+using Spirebyte.Framework.Messaging.Brokers;
+using Spirebyte.Framework.Shared.Handlers;
 using Spirebyte.Services.Sprints.Application.Sprints.Events;
 using Spirebyte.Services.Sprints.Application.Sprints.Exceptions;
 using Spirebyte.Services.Sprints.Core.Repositories;
@@ -28,6 +28,6 @@ internal sealed class DeleteSprintHandler : ICommandHandler<DeleteSprint>
 
         await _sprintRepository.DeleteAsync(sprint.Id);
 
-        await _messageBroker.PublishAsync(new SprintDeleted(sprint));
+        await _messageBroker.SendAsync(new SprintDeleted(sprint), cancellationToken);
     }
 }

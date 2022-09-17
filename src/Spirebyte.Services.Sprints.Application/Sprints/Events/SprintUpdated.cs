@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using Convey.CQRS.Events;
+using Spirebyte.Framework.Shared.Abstractions;
+using Spirebyte.Framework.Shared.Attributes;
 using Spirebyte.Services.Sprints.Core.Entities;
 using Spirebyte.Shared.Changes;
 using Change = Spirebyte.Shared.Changes.ValueObjects.Change;
 
 namespace Spirebyte.Services.Sprints.Application.Sprints.Events;
 
-[Contract]
+[Message("sprints", "sprint_updated")]
 internal class SprintUpdated : IEvent
 {
     public SprintUpdated(string id, string title, string description, IEnumerable<string> issueIds, string projectId,

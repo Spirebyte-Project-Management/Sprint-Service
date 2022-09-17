@@ -1,16 +1,15 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Convey.CQRS.Commands;
 using Microsoft.Extensions.Logging;
+using Spirebyte.Framework.Messaging.Brokers;
+using Spirebyte.Framework.Shared.Handlers;
 using Spirebyte.Services.Sprints.Application.Issues.Exceptions;
-using Spirebyte.Services.Sprints.Application.Services.Interfaces;
 using Spirebyte.Services.Sprints.Application.Sprints.Events;
 using Spirebyte.Services.Sprints.Application.Sprints.Exceptions;
 using Spirebyte.Services.Sprints.Core.Repositories;
 
 namespace Spirebyte.Services.Sprints.Application.Sprints.Commands.Handlers;
 
-// Simple wrapper
 internal sealed class AddIssueToSprintHandler : ICommandHandler<AddIssueToSprint>
 {
     private readonly IIssueRepository _issueRepository;
@@ -44,6 +43,6 @@ internal sealed class AddIssueToSprintHandler : ICommandHandler<AddIssueToSprint
         sprint.AddIssue(issue);
         await _sprintRepository.UpdateAsync(sprint);
 
-        await _messageBroker.PublishAsync(new AddedIssueToSprint(sprint.Id, sprint.ProjectId, issue.Id));
+        await _messageBroker.SendAsync(new AddedIssueToSprint(sprint.Id, sprint.ProjectId, issue.Id), cancellationToken);
     }
 }

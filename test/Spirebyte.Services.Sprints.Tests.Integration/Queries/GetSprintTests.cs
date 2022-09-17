@@ -1,66 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Convey.CQRS.Queries;
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
+using Spirebyte.Framework.Shared.Handlers;
+using Spirebyte.Framework.Tests.Shared.Fixtures;
 using Spirebyte.Services.Sprints.API;
 using Spirebyte.Services.Sprints.Application.Sprints.DTO;
 using Spirebyte.Services.Sprints.Application.Sprints.Queries;
 using Spirebyte.Services.Sprints.Core.Entities;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers;
-using Spirebyte.Services.Sprints.Tests.Shared.Factories;
-using Spirebyte.Services.Sprints.Tests.Shared.Fixtures;
+using Spirebyte.Services.Sprints.Infrastructure.Mongo.Queries.Handlers;
+using Spirebyte.Services.Sprints.Tests.Shared.MockData.Entities;
 using Xunit;
 
 namespace Spirebyte.Services.Sprints.Tests.Integration.Queries;
 
-[Collection("Spirebyte collection")]
-public class GetSprintTests : IDisposable
+public class GetSprintTests : TestBase
 {
-    private const string Exchange = "sprints";
     private readonly IQueryHandler<GetSprint, SprintDto> _queryHandler;
-    private readonly RabbitMqFixture _rabbitMqFixture;
-    private readonly MongoDbFixture<SprintDocument, string> _sprintMongoDbFixture;
 
-    public GetSprintTests(SpirebyteApplicationFactory<Program> factory)
+    public GetSprintTests(
+        MongoDbFixture<ProjectDocument, string> projectsMongoDbFixture,
+        MongoDbFixture<IssueDocument, string> issuesMongoDbFixture,
+        MongoDbFixture<SprintDocument, string> sprintsMongoDbFixture) : base(projectsMongoDbFixture, issuesMongoDbFixture, sprintsMongoDbFixture)
     {
-        _rabbitMqFixture = new RabbitMqFixture();
-        _sprintMongoDbFixture = new MongoDbFixture<SprintDocument, string>("sprints");
-        factory.Server.AllowSynchronousIO = true;
-        _queryHandler = factory.Services.GetRequiredService<IQueryHandler<GetSprint, SprintDto>>();
+        _queryHandler = new GetSprintHandler(SprintsMongoDbFixture);
     }
-
-    public async void Dispose()
-    {
-        _sprintMongoDbFixture.Dispose();
-    }
-
 
     [Fact]
     public async Task get_sprint_query_succeeds_when_sprint_exists()
     {
-        var sprintId = "sprintKey" + Guid.NewGuid();
-        var title = "Title";
-        var description = "description";
-        var projectId = "projectKey" + Guid.NewGuid();
-        var createdAt = DateTime.Now;
-        var startedAt = DateTime.MinValue;
-        var startDate = DateTime.MinValue;
-        var endDate = DateTime.MaxValue;
-        var endedAt = DateTime.MaxValue;
-
-        var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate,
-            endedAt, new List<Change>(), 0, 0);
-
-        await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
-
-
-        var query = new GetSprint(sprintId);
+        var fakedSprint = SprintFaker.Instance.Generate();
+        
+        await SprintsMongoDbFixture.AddAsync(fakedSprint.AsDocument());
+        
+        var query = new GetSprint(fakedSprint.Id);
 
         // Check if exception is thrown
-
         var requestResult = _queryHandler
             .Awaiting(c => c.HandleAsync(query));
 
@@ -69,9 +46,9 @@ public class GetSprintTests : IDisposable
         var result = await requestResult();
 
         result.Should().NotBeNull();
-        result.Id.Should().Be(sprintId);
-        result.Title.Should().Be(title);
-        result.Description.Should().Be(description);
+        result.Id.Should().Be(fakedSprint.Id);
+        result.Title.Should().Be(fakedSprint.Title);
+        result.Description.Should().Be(fakedSprint.Description);
     }
 
     [Fact]
@@ -82,14 +59,12 @@ public class GetSprintTests : IDisposable
         var query = new GetSprint(sprintId);
 
         // Check if exception is thrown
-
         var requestResult = _queryHandler
             .Awaiting(c => c.HandleAsync(query));
 
         await requestResult.Should().NotThrowAsync();
 
         var result = await requestResult();
-
         result.Should().BeNull();
     }
 }

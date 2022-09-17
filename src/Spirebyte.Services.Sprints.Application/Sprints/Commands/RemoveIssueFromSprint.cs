@@ -1,8 +1,9 @@
-﻿using Convey.CQRS.Commands;
+﻿using Spirebyte.Framework.Shared.Abstractions;
+using Spirebyte.Framework.Shared.Attributes;
 
 namespace Spirebyte.Services.Sprints.Application.Sprints.Commands;
 
-[Contract]
+[Message("sprints", "remove_issue_from_sprint", "sprints.remove_issue_from_sprint")]
 public class RemoveIssueFromSprint : ICommand
 {
     public RemoveIssueFromSprint(string sprintId, string issueId)

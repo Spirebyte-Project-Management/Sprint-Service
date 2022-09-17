@@ -1,9 +1,10 @@
 ﻿using System;
-using Convey.CQRS.Commands;
+using Spirebyte.Framework.Shared.Abstractions;
+using Spirebyte.Framework.Shared.Attributes;
 
 namespace Spirebyte.Services.Sprints.Application.Sprints.Commands;
 
-[Contract]
+[Message("sprints", "create_sprint", "sprints.create_sprint")]
 public record CreateSprint(string Title, string Description, string ProjectId, DateTime StartDate,
     DateTime EndDate) : ICommand
 {

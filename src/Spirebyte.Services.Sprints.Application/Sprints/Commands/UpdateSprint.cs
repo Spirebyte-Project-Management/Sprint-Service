@@ -1,9 +1,10 @@
 ﻿using System;
-using Convey.CQRS.Commands;
+using Spirebyte.Framework.Shared.Abstractions;
+using Spirebyte.Framework.Shared.Attributes;
 
 namespace Spirebyte.Services.Sprints.Application.Sprints.Commands;
 
-[Contract]
+[Message("sprints", "update_sprint", "sprints.update_sprint")]
 public class UpdateSprint : ICommand
 {
     public UpdateSprint(string id, string title, string description, string projectId, DateTime startDate,

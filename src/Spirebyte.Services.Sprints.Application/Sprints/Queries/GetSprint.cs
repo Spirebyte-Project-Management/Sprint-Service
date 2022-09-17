@@ -1,4 +1,4 @@
-﻿using Convey.CQRS.Queries;
+﻿using Spirebyte.Framework.Shared.Abstractions;
 using Spirebyte.Services.Sprints.Application.Sprints.DTO;
 
 namespace Spirebyte.Services.Sprints.Application.Sprints.Queries;

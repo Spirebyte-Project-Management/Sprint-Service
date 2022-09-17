@@ -1,4 +1,4 @@
-﻿using Spirebyte.Services.Sprints.Application.Exceptions.Base;
+﻿using Spirebyte.Framework.Shared.Exceptions;
 
 namespace Spirebyte.Services.Sprints.Application.Issues.Exceptions;
 
@@ -10,6 +10,6 @@ public class IssueAlreadyCreatedException : AppException
         IssueId = issueId;
     }
 
-    public override string Code { get; } = "issue_already_created";
+    public string Code { get; } = "issue_already_created";
     public string IssueId { get; }
 }

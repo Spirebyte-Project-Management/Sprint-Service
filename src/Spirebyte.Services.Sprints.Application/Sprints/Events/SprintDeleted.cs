@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Convey.CQRS.Events;
+using Spirebyte.Framework.Shared.Abstractions;
+using Spirebyte.Framework.Shared.Attributes;
 using Spirebyte.Services.Sprints.Core.Entities;
 
 namespace Spirebyte.Services.Sprints.Application.Sprints.Events;
 
-[Contract]
+[Message("sprints", "sprint_deleted")]
 internal class SprintDeleted : IEvent
 {
     public SprintDeleted(string id, string title, string description, IEnumerable<string> issueIds, string projectId,

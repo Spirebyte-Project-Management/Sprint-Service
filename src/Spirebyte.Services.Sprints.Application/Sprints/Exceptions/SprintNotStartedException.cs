@@ -1,4 +1,4 @@
-﻿using Spirebyte.Services.Sprints.Application.Exceptions.Base;
+﻿using Spirebyte.Framework.Shared.Exceptions;
 
 namespace Spirebyte.Services.Sprints.Application.Sprints.Exceptions;
 
@@ -9,6 +9,6 @@ public class SprintNotStartedException : AppException
         SprintId = sprintId;
     }
 
-    public override string Code { get; } = "sprint_not_started";
+    public string Code { get; } = "sprint_not_started";
     public string SprintId { get; }
 }

@@ -1,4 +1,4 @@
-﻿using Spirebyte.Services.Sprints.Application.Exceptions.Base;
+﻿using Spirebyte.Framework.Shared.Exceptions;
 
 namespace Spirebyte.Services.Sprints.Application.Issues.Exceptions;
 
@@ -9,6 +9,6 @@ public class IssueNotFoundException : AppException
         SprintKey = issueKey;
     }
 
-    public override string Code { get; } = "issue_not_found";
+    public string Code { get; } = "issue_not_found";
     public string SprintKey { get; }
 }

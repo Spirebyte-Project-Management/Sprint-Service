@@ -1,88 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Convey.CQRS.Commands;
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
+using Spirebyte.Framework.Shared.Handlers;
+using Spirebyte.Framework.Tests.Shared.Fixtures;
+using Spirebyte.Framework.Tests.Shared.Infrastructure;
 using Spirebyte.Services.Sprints.API;
 using Spirebyte.Services.Sprints.Application.Issues.Exceptions;
 using Spirebyte.Services.Sprints.Application.Sprints.Commands;
+using Spirebyte.Services.Sprints.Application.Sprints.Commands.Handlers;
 using Spirebyte.Services.Sprints.Application.Sprints.Exceptions;
 using Spirebyte.Services.Sprints.Core.Entities;
 using Spirebyte.Services.Sprints.Core.Enums;
+using Spirebyte.Services.Sprints.Core.Repositories;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers;
-using Spirebyte.Services.Sprints.Tests.Shared.Factories;
-using Spirebyte.Services.Sprints.Tests.Shared.Fixtures;
+using Spirebyte.Services.Sprints.Infrastructure.Mongo.Repositories;
+using Spirebyte.Services.Sprints.Tests.Shared.MockData.Entities;
 using Xunit;
 
 namespace Spirebyte.Services.Sprints.Tests.Integration.Commands;
 
-[Collection("Spirebyte collection")]
-public class RemoveIssueFromSprintTests : IDisposable
+public class RemoveIssueFromSprintTests : TestBase
 {
-    private const string Exchange = "sprints";
     private readonly ICommandHandler<RemoveIssueFromSprint> _commandHandler;
-    private readonly MongoDbFixture<IssueDocument, string> _issueMongoDbFixture;
-    private readonly MongoDbFixture<ProjectDocument, string> _projectMongoDbFixture;
-    private readonly RabbitMqFixture _rabbitMqFixture;
-    private readonly MongoDbFixture<SprintDocument, string> _sprintMongoDbFixture;
+    private readonly TestMessageBroker _messageBroker;
+    
+    private readonly ISprintRepository _sprintRepository;
+    private readonly IIssueRepository _issueRepository;
 
-    public RemoveIssueFromSprintTests(SpirebyteApplicationFactory<Program> factory)
+    public RemoveIssueFromSprintTests(
+        MongoDbFixture<ProjectDocument, string> projectsMongoDbFixture,
+        MongoDbFixture<IssueDocument, string> issuesMongoDbFixture,
+        MongoDbFixture<SprintDocument, string> sprintsMongoDbFixture) : base(projectsMongoDbFixture, issuesMongoDbFixture, sprintsMongoDbFixture)
     {
-        _rabbitMqFixture = new RabbitMqFixture();
-        _sprintMongoDbFixture = new MongoDbFixture<SprintDocument, string>("sprints");
-        _projectMongoDbFixture = new MongoDbFixture<ProjectDocument, string>("projects");
-        _issueMongoDbFixture = new MongoDbFixture<IssueDocument, string>("issues");
-        factory.Server.AllowSynchronousIO = true;
-        _commandHandler = factory.Services.GetRequiredService<ICommandHandler<RemoveIssueFromSprint>>();
-    }
+        _sprintRepository = new SprintRepository(SprintsMongoDbFixture);
+        _issueRepository = new IssueRepository(IssuesMongoDbFixture);
+        _messageBroker = new TestMessageBroker();
 
-    public async void Dispose()
-    {
-        _sprintMongoDbFixture.Dispose();
-        _projectMongoDbFixture.Dispose();
-        _issueMongoDbFixture.Dispose();
+        _commandHandler = new RemoveIssueFromSprintHandler(_sprintRepository, _issueRepository, _messageBroker);
     }
 
     [Fact]
     public async Task remove_issue_from_sprint_command_should_remove_issue_from_sprint()
     {
-        var projectId = "projectKey" + Guid.NewGuid();
+        var fakedSprint = SprintFaker.Instance.Generate();
 
-        var project = new Project(projectId);
-        await _projectMongoDbFixture.InsertAsync(project.AsDocument());
+        await SprintsMongoDbFixture.AddAsync(fakedSprint.AsDocument());
 
-        var sprintId = "sprintKey" + Guid.NewGuid();
-        var title = "Title";
-        var description = "description";
-        var createdAt = DateTime.Now;
-        var startedAt = DateTime.MinValue;
-        var startDate = DateTime.MinValue;
-        var endDate = DateTime.MaxValue;
-        var endedAt = DateTime.MaxValue;
+        var issue = new Issue("issueKey" + Guid.NewGuid(), fakedSprint.ProjectId, fakedSprint.Id, 0, IssueStatus.TODO);
+        await IssuesMongoDbFixture.AddAsync(issue.AsDocument());
 
-        var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate,
-            endedAt, new List<Change>(), 0, 0);
-        await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
-
-        var issueId = "issueKey" + Guid.NewGuid();
-
-        var issue = new Issue(issueId, projectId, sprintId, 0, IssueStatus.TODO);
-        await _issueMongoDbFixture.InsertAsync(issue.AsDocument());
-
-
-        var command = new RemoveIssueFromSprint(sprintId, issueId);
+        var command = new RemoveIssueFromSprint(fakedSprint.Id, issue.Id);
 
         // Check if exception is thrown
-
         await _commandHandler
             .Awaiting(c => c.HandleAsync(command))
             .Should().NotThrowAsync();
-
-
-        var removedIssue = await _issueMongoDbFixture.GetAsync(issueId);
-
+        
+        var removedIssue = await IssuesMongoDbFixture.GetAsync(issue.Id);
         removedIssue.Should().NotBeNull();
         removedIssue.SprintId.Should().BeNull();
     }
@@ -90,24 +68,16 @@ public class RemoveIssueFromSprintTests : IDisposable
     [Fact]
     public async void remove_issue_from_sprint_command_fails_when_sprint_does_not_exist()
     {
-        var projectId = "projectKey" + Guid.NewGuid();
-
-        var project = new Project(projectId);
-        await _projectMongoDbFixture.InsertAsync(project.AsDocument());
-
-        var sprintId = "sprintKey" + Guid.NewGuid();
+        var fakedSprint = SprintFaker.Instance.Generate();
 
         var issueId = "issueKey" + Guid.NewGuid();
 
-        var issue = new Issue(issueId, projectId, null, 0, IssueStatus.TODO);
-        await _issueMongoDbFixture.InsertAsync(issue.AsDocument());
-
-
-        var command = new RemoveIssueFromSprint(sprintId, issueId);
-
-
+        var issue = new Issue(issueId, fakedSprint.ProjectId, null, 0, IssueStatus.TODO);
+        await IssuesMongoDbFixture.AddAsync(issue.AsDocument());
+        
+        var command = new RemoveIssueFromSprint(fakedSprint.Id, issueId);
+        
         // Check if exception is thrown
-
         await _commandHandler
             .Awaiting(c => c.HandleAsync(command))
             .Should().ThrowAsync<SprintNotFoundException>();
@@ -116,32 +86,13 @@ public class RemoveIssueFromSprintTests : IDisposable
     [Fact]
     public async void remove_issue_from_sprint_command_fails_when_issue_does_not_exist()
     {
-        var projectId = "projectKey" + Guid.NewGuid();
-
-        var project = new Project(projectId);
-        await _projectMongoDbFixture.InsertAsync(project.AsDocument());
-
-        var sprintId = "sprintKey" + Guid.NewGuid();
-        var title = "Title";
-        var description = "description";
-        var createdAt = DateTime.Now;
-        var startedAt = DateTime.MinValue;
-        var startDate = DateTime.MinValue;
-        var endDate = DateTime.MaxValue;
-        var endedAt = DateTime.MaxValue;
-
-        var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate,
-            endedAt, new List<Change>(), 0, 0);
-        await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
+        var fakedSprint = SprintFaker.Instance.Generate();
+        await SprintsMongoDbFixture.AddAsync(fakedSprint.AsDocument());
 
         var issueId = "issueKey" + Guid.NewGuid();
-
-
-        var command = new RemoveIssueFromSprint(sprintId, issueId);
-
-
+        var command = new RemoveIssueFromSprint(fakedSprint.Id, issueId);
+        
         // Check if exception is thrown
-
         await _commandHandler
             .Awaiting(c => c.HandleAsync(command))
             .Should().ThrowAsync<IssueNotFoundException>();

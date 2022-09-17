@@ -1,114 +1,85 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Convey.CQRS.Commands;
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using Spirebyte.Services.Sprints.API;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
+using Spirebyte.Framework.Shared.Handlers;
+using Spirebyte.Framework.Tests.Shared.Fixtures;
+using Spirebyte.Framework.Tests.Shared.Infrastructure;
 using Spirebyte.Services.Sprints.Application.Issues.Exceptions;
 using Spirebyte.Services.Sprints.Application.Sprints.Commands;
+using Spirebyte.Services.Sprints.Application.Sprints.Commands.Handlers;
 using Spirebyte.Services.Sprints.Application.Sprints.Exceptions;
 using Spirebyte.Services.Sprints.Core.Entities;
 using Spirebyte.Services.Sprints.Core.Enums;
+using Spirebyte.Services.Sprints.Core.Repositories;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers;
-using Spirebyte.Services.Sprints.Tests.Shared.Factories;
-using Spirebyte.Services.Sprints.Tests.Shared.Fixtures;
+using Spirebyte.Services.Sprints.Infrastructure.Mongo.Repositories;
+using Spirebyte.Services.Sprints.Tests.Shared.MockData.Entities;
 using Xunit;
 
 namespace Spirebyte.Services.Sprints.Tests.Integration.Commands;
 
-[Collection("Spirebyte collection")]
-public class AddIssueToSprintTests : IDisposable
+public class AddIssueToSprintTests : TestBase
 {
-    private const string Exchange = "sprints";
     private readonly ICommandHandler<AddIssueToSprint> _commandHandler;
-    private readonly MongoDbFixture<IssueDocument, string> _issueMongoDbFixture;
-    private readonly MongoDbFixture<ProjectDocument, string> _projectMongoDbFixture;
-    private readonly RabbitMqFixture _rabbitMqFixture;
-    private readonly MongoDbFixture<SprintDocument, string> _sprintMongoDbFixture;
+    private readonly TestMessageBroker _messageBroker;
 
-    public AddIssueToSprintTests(SpirebyteApplicationFactory<Program> factory)
+    private readonly ISprintRepository _sprintRepository;
+    private readonly IIssueRepository _issueRepository;
+
+    private readonly ILogger<AddIssueToSprintHandler> _logger;
+
+    public AddIssueToSprintTests(
+        MongoDbFixture<ProjectDocument, string> projectsMongoDbFixture,
+        MongoDbFixture<IssueDocument, string> issuesMongoDbFixture,
+        MongoDbFixture<SprintDocument, string> sprintsMongoDbFixture) : base(projectsMongoDbFixture, issuesMongoDbFixture, sprintsMongoDbFixture)
     {
-        _rabbitMqFixture = new RabbitMqFixture();
-        _sprintMongoDbFixture = new MongoDbFixture<SprintDocument, string>("sprints");
-        _projectMongoDbFixture = new MongoDbFixture<ProjectDocument, string>("projects");
-        _issueMongoDbFixture = new MongoDbFixture<IssueDocument, string>("issues");
-        factory.Server.AllowSynchronousIO = true;
-        _commandHandler = factory.Services.GetRequiredService<ICommandHandler<AddIssueToSprint>>();
+        _sprintRepository = new SprintRepository(SprintsMongoDbFixture);
+        _issueRepository = new IssueRepository(IssuesMongoDbFixture);
+        _messageBroker = new TestMessageBroker();
+        _logger = Substitute.For<ILogger<AddIssueToSprintHandler>>();
+
+        _commandHandler = new AddIssueToSprintHandler(_sprintRepository, _issueRepository, _messageBroker, _logger);
     }
-
-    public async void Dispose()
-    {
-        _sprintMongoDbFixture.Dispose();
-        _projectMongoDbFixture.Dispose();
-        _issueMongoDbFixture.Dispose();
-    }
-
-
+    
     [Fact]
     public async Task add_issue_to_sprint_command_should_ass_issue_to_sprint()
     {
-        var projectId = "projectKey" + Guid.NewGuid();
-
-        var project = new Project(projectId);
-        await _projectMongoDbFixture.InsertAsync(project.AsDocument());
-
-        var sprintId = "sprintKey" + Guid.NewGuid();
-        var title = "Title";
-        var description = "description";
-        var createdAt = DateTime.Now;
-        var startedAt = DateTime.MinValue;
-        var startDate = DateTime.MinValue;
-        var endDate = DateTime.MaxValue;
-        var endedAt = DateTime.MaxValue;
-
-        var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate,
-            endedAt, new List<Change>(), 0, 0);
-        await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
+        var fakedSprint = SprintFaker.Instance.Generate();
+        
+        await SprintsMongoDbFixture.AddAsync(fakedSprint.AsDocument());
 
         var issueId = "issueKey" + Guid.NewGuid();
-
-        var issue = new Issue(issueId, projectId, null, 0, IssueStatus.TODO);
-        await _issueMongoDbFixture.InsertAsync(issue.AsDocument());
-
-
-        var command = new AddIssueToSprint(sprintId, issueId);
+        var issue = new Issue(issueId, fakedSprint.ProjectId, null, 0, IssueStatus.TODO);
+        await IssuesMongoDbFixture.AddAsync(issue.AsDocument());
+        
+        var command = new AddIssueToSprint(fakedSprint.Id, issueId);
 
         // Check if exception is thrown
-
         await _commandHandler
             .Awaiting(c => c.HandleAsync(command))
             .Should().NotThrowAsync();
-
-
-        var removedIssue = await _issueMongoDbFixture.GetAsync(issueId);
-
+        
+        var removedIssue = await IssuesMongoDbFixture.GetAsync(issueId);
         removedIssue.Should().NotBeNull();
-        removedIssue.SprintId.Should().Be(sprintId);
+        removedIssue.SprintId.Should().Be(fakedSprint.Id);
     }
 
     [Fact]
     public async void add_issue_to_sprint_command_fails_when_sprint_does_not_exist()
     {
-        var projectId = "projectKey" + Guid.NewGuid();
-
-        var project = new Project(projectId);
-        await _projectMongoDbFixture.InsertAsync(project.AsDocument());
-
-        var sprintId = "sprintKey" + Guid.NewGuid();
+        var fakedSprint = SprintFaker.Instance.Generate();
 
         var issueId = "issueKey" + Guid.NewGuid();
 
-        var issue = new Issue(issueId, projectId, null, 0, IssueStatus.TODO);
-        await _issueMongoDbFixture.InsertAsync(issue.AsDocument());
-
-
-        var command = new AddIssueToSprint(sprintId, issueId);
-
-
+        var issue = new Issue(issueId, fakedSprint.ProjectId, null, 0, IssueStatus.TODO);
+        await IssuesMongoDbFixture.AddAsync(issue.AsDocument());
+        
+        var command = new AddIssueToSprint(fakedSprint.Id, issueId);
+        
         // Check if exception is thrown
-
         await _commandHandler
             .Awaiting(c => c.HandleAsync(command))
             .Should().ThrowAsync<SprintNotFoundException>();
@@ -117,32 +88,15 @@ public class AddIssueToSprintTests : IDisposable
     [Fact]
     public async void add_issue_to_sprint_command_fails_when_issue_does_not_exist()
     {
-        var projectId = "projectId" + Guid.NewGuid();
-
-        var project = new Project(projectId);
-        await _projectMongoDbFixture.InsertAsync(project.AsDocument());
-
-        var sprintId = "sprintKey" + Guid.NewGuid();
-        var title = "Title";
-        var description = "description";
-        var createdAt = DateTime.Now;
-        var startedAt = DateTime.MinValue;
-        var startDate = DateTime.MinValue;
-        var endDate = DateTime.MaxValue;
-        var endedAt = DateTime.MaxValue;
-
-        var sprint = new Sprint(sprintId, title, description, projectId, null, createdAt, startedAt, startDate, endDate,
-            endedAt, new List<Change>(), 0, 0);
-        await _sprintMongoDbFixture.InsertAsync(sprint.AsDocument());
+        var fakedSprint = SprintFaker.Instance.Generate();
+        
+        await SprintsMongoDbFixture.AddAsync(fakedSprint.AsDocument());
 
         var issueId = "issueKey" + Guid.NewGuid();
-
-
-        var command = new AddIssueToSprint(sprintId, issueId);
-
-
+        
+        var command = new AddIssueToSprint(fakedSprint.Id, issueId);
+        
         // Check if exception is thrown
-
         await _commandHandler
             .Awaiting(c => c.HandleAsync(command))
             .Should().ThrowAsync<IssueNotFoundException>();
