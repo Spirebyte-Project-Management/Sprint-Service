@@ -2,15 +2,15 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-        <PackageReference Include="Spirebyte.Shared" Version="1.0.20" />
+        <PackageReference Include="Spirebyte.Shared" Version="1.0.22" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\Shared\src\Spirebyte.Shared\Spirebyte.Shared.csproj" />
         <ProjectReference Include="..\Spirebyte.Services.Sprints.Core\Spirebyte.Services.Sprints.Core.csproj" />
     </ItemGroup>
 

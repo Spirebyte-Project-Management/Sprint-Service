@@ -2,9 +2,10 @@
 
 public static class ApiScopes
 {
-    public const string Read = "read";
-    public const string Write = "write";
-    public const string Delete = "delete";
-    public const string Start = "start";
-    public const string Stop = "stop";
+    public const string SprintsManage = "sprints.manage";
+    public const string SprintsRead = "sprints.read";
+    public const string SprintsWrite = "sprints.write";
+    public const string SprintsDelete = "sprints.delete";
+    public const string SprintsStart = "sprints.start";
+    public const string SprintsStop = "sprints.stop";
 }

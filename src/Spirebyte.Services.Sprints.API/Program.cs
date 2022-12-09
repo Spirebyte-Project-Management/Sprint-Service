@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Spirebyte.Framework;
+using Spirebyte.Framework.Auth;
 using Spirebyte.Services.Sprints.Application;
 using Spirebyte.Services.Sprints.Core.Constants;
 using Spirebyte.Services.Sprints.Infrastructure;
-using Spirebyte.Shared.IdentityServer;
 
 namespace Spirebyte.Services.Sprints.API;
 
@@ -30,11 +30,11 @@ public class Program
                 .AddInfrastructure(ctx.Configuration)
                 .Configure<AuthorizationOptions>(options =>
                 {
-                    options.AddEitherOrScopePolicy(ApiScopes.Read, "sprints.read", "sprints.manage");
-                    options.AddEitherOrScopePolicy(ApiScopes.Write, "sprints.write", "sprints.manage");
-                    options.AddEitherOrScopePolicy(ApiScopes.Delete, "sprints.delete", "sprints.manage");
-                    options.AddEitherOrScopePolicy(ApiScopes.Start, "sprints.start", "sprints.manage");
-                    options.AddEitherOrScopePolicy(ApiScopes.Stop, "sprints.stop", "sprints.manage");
+                    options.AddEitherOrScopePolicy(ApiScopes.SprintsRead, ApiScopes.SprintsRead, ApiScopes.SprintsManage);
+                    options.AddEitherOrScopePolicy(ApiScopes.SprintsWrite, ApiScopes.SprintsWrite, ApiScopes.SprintsManage);
+                    options.AddEitherOrScopePolicy(ApiScopes.SprintsDelete, ApiScopes.SprintsDelete, ApiScopes.SprintsManage);
+                    options.AddEitherOrScopePolicy(ApiScopes.SprintsStart, ApiScopes.SprintsStart, ApiScopes.SprintsManage);
+                    options.AddEitherOrScopePolicy(ApiScopes.SprintsStop, ApiScopes.SprintsStop, ApiScopes.SprintsManage);
                 })
                 .AddControllers()
             )
