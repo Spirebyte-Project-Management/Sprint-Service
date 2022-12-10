@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Spirebyte.Framework.Shared.Handlers;
 using Spirebyte.Framework.Tests.Shared.Fixtures;
 using Spirebyte.Framework.Tests.Shared.Infrastructure;
-using Spirebyte.Services.Sprints.API;
 using Spirebyte.Services.Sprints.Application.Sprints.Commands;
 using Spirebyte.Services.Sprints.Application.Sprints.Commands.Handlers;
 using Spirebyte.Services.Sprints.Application.Sprints.Exceptions;
-using Spirebyte.Services.Sprints.Core.Entities;
 using Spirebyte.Services.Sprints.Core.Repositories;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Sprints.Infrastructure.Mongo.Documents.Mappers;

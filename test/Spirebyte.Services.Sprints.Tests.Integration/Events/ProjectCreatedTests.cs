@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Spirebyte.Framework.Shared.Handlers;
 using Spirebyte.Framework.Tests.Shared.Fixtures;
-using Spirebyte.Services.Sprints.API;
 using Spirebyte.Services.Sprints.Application.Projects.Events.External;
 using Spirebyte.Services.Sprints.Application.Projects.Events.External.Handlers;
 using Spirebyte.Services.Sprints.Application.Projects.Exceptions;

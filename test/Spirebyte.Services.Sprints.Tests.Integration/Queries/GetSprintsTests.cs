@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Spirebyte.Framework.Shared.Handlers;
 using Spirebyte.Framework.Tests.Shared.Fixtures;
-using Spirebyte.Services.Sprints.API;
 using Spirebyte.Services.Sprints.Application.Sprints.DTO;
 using Spirebyte.Services.Sprints.Application.Sprints.Queries;
 using Spirebyte.Services.Sprints.Core.Entities;
